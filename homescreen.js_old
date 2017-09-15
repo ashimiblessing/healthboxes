@@ -1,0 +1,402 @@
+/**
+ * React Native App
+ * By Ashimi Blessing
+ * @flow
+ */
+
+//import React, { Component } from "react";
+//import { AppRegistry, StyleSheet, Text, View } from "react-native";
+
+import React, { Component } from "react";
+
+import {
+  NetInfo,
+  AppRegistry,
+  StyleSheet,
+  Image,
+  View,
+  ToolbarAndroid,
+  ActivityIndicator,
+  AsyncStorage,
+  Alert,
+  Text,
+  TouchableHighlight,
+  Dimensions,
+  TouchableOpacity,
+  Linking,
+  StatusBar
+} from "react-native";
+import {
+  Container,
+  Header,
+  Title,
+  Content,
+  Footer,
+  FooterTab,
+  Button,
+  Left,
+  Right,
+  Body,
+  Form,
+  Item,
+  Input,
+  Label,
+  Grid,
+  Row,
+  Col
+} from "native-base";
+
+import Icon from "react-native-vector-icons/MaterialIcons";
+
+import { StackNavigator } from "react-navigation";
+
+import Modal from "react-native-modal";
+import * as firebase from "firebase";
+
+boxingStyle = function(myColor) {
+  return {
+    justifyContent: "center",
+
+    width: width * 0.485,
+    height: width * 0.485,
+
+    backgroundColor: myColor,
+    flexDirection: "column"
+  };
+};
+
+textisize = function(size, color = "#191919", weight = "500") {
+  return {
+    alignSelf: "center",
+    fontSize: size,
+
+    color: color,
+    fontWeight: weight,
+    marginVertical: 10
+  };
+};
+
+export default class HomeScreen extends Component {
+  static navigationOptions = {
+    title: "HealthBoxes",
+    header: false
+  };
+
+  state = {
+    isModalVisible: false
+  };
+
+  _showModal = () => this.setState({ isModalVisible: true });
+
+  _hideModal = () => this.setState({ isModalVisible: false });
+
+  callHandler(who) {
+    alert("Yah! i'm calling " + who + " o");
+
+    const url = "telprompt:" + who;
+    Linking.canOpenURL(url).then(supported => {
+      if (supported) {
+        return Linking.openURL(url).catch(() => null);
+      }
+    });
+  }
+
+  async signOut() {
+    const { navigate } = this.props.navigation;
+
+    AsyncStorage.removeItem("logincookie");
+    await firebase.auth().signOut();
+
+    navigate("Welcome", { message: "Please Login" });
+  }
+
+  async componentWillMount() {
+    var user = firebase.auth().currentUser;
+    //alert(user.displayName);
+
+    /*
+
+    var user = firebase.auth().currentUser;
+
+    if (user) {
+      // User is signed in.
+    } else {
+      const { navigate } = this.props.navigation;
+
+      AsyncStorage.removeItem("logincookie");
+      await firebase.auth().signOut();
+
+      navigate("Welcome", { message: "Session Closed" });
+
+      // No user is signed in.
+    }
+
+      */
+  }
+
+  render() {
+    const { navigate } = this.props.navigation;
+    const { params } = this.props.navigation.state;
+
+    var user = firebase.auth().currentUser;
+    if (user != null) {
+      const dname = user.displayName;
+    } else {
+      const dname = "User";
+    }
+
+    return (
+      <Container style={styles.viewcontain}>
+        <Modal
+          isVisible={this.state.isModalVisible}
+          onBackButtonPress={this._hideModal}
+          onBackdropPress={this._hideModal}
+        >
+          <View style={styles.modalchild}>
+            <Text style={textisize(20)}>Select Option</Text>
+
+            <Button
+              style={styles.callbutton}
+              onPress={() => this.callHandler("specialist")}
+            >
+              <Text style={styles.cbuttontxt}>Specialist</Text>
+            </Button>
+
+            <Button
+              style={styles.callbutton}
+              onPress={() => this.callHandler("doctor")}
+            >
+              <Text style={styles.cbuttontxt}>Doctor</Text>
+            </Button>
+
+            <Button
+              style={styles.callbutton}
+              onPress={() => this.callHandler("generalcare")}
+            >
+              <Text style={styles.cbuttontxt}>General Care</Text>
+            </Button>
+          </View>
+          <Button style={styles.closebutt} onPress={() => this._hideModal()}>
+            <Text style={{ color: "#191919", fontWeight: "600" }}>close</Text>
+          </Button>
+        </Modal>
+
+        <Header
+          style={{ backgroundColor: "#f26c4d" }}
+          androidStatusBarColor="#394753"
+        >
+          <StatusBar barStyle="light-content" />
+          <Body>
+            <Text style={textisize(20, "white", "500")}>Dashboard</Text>
+          </Body>
+        </Header>
+        <Content>
+          <Grid>
+            <Row style={styles.topsmall}>
+              <Row>
+                <Col>
+                  <Image
+                    source={require("./images/doctors.jpg")}
+                    style={styles.dashimg}
+                  />
+
+                  <TouchableHighlight
+                    style={{
+                      justifyContent: "center"
+                    }}
+                  >
+                    <Text style={styles.dname}>
+                      Welcome {user.displayName}
+                    </Text>
+                  </TouchableHighlight>
+                </Col>
+              </Row>
+            </Row>
+
+            <Row size={1} style={styles.juxt}>
+              <Col style={styles.box}>
+                <TouchableOpacity
+                  style={boxingStyle("#25363e")}
+                  onPress={this._showModal}
+                >
+                  <Icon active name="call" style={styles.headicon} />
+
+                  <Text style={styles.ctxt}>Call in</Text>
+                </TouchableOpacity>
+              </Col>
+              <Col style={styles.box}>
+                <TouchableOpacity
+                  style={boxingStyle("#8b7860")}
+                  onPress={() => navigate("Appoint", { appoint: "book" })}
+                >
+                  <Icon active name="people" style={styles.headicon} />
+
+                  <Text style={styles.ctxt}>Appointments</Text>
+                </TouchableOpacity>
+              </Col>
+            </Row>
+
+            <Row size={1} style={styles.juxt}>
+              <Col style={styles.box}>
+                <TouchableOpacity
+                  style={boxingStyle("#607d8b")}
+                  onPress={() => navigate("Viewer", { parami: "account" })}
+                >
+                  <Icon active name="edit" style={styles.headicon} />
+
+                  <Text style={styles.ctxt}>Records</Text>
+                </TouchableOpacity>
+              </Col>
+
+              <Col style={styles.box}>
+                <TouchableOpacity
+                  style={boxingStyle("#3e301f")}
+                  onPress={() => navigate("User")}
+                >
+                  <Icon active name="person-outline" style={styles.headicon} />
+
+                  <Text style={styles.ctxt}>Settings</Text>
+                </TouchableOpacity>
+              </Col>
+            </Row>
+          </Grid>
+        </Content>
+
+        <Footer style={styles.foot}>
+          <FooterTab>
+            <Button onPress={() => navigate("Home")}>
+              <Icon name="home" style={styles.ico} />
+            </Button>
+            <Button onPress={() => navigate("User")}>
+              <Icon name="account-circle" style={styles.ico} />
+            </Button>
+            <Button onPress={() => this.signOut()}>
+              <Icon name="highlight-off" style={styles.ico} />
+            </Button>
+            <Button onPress={() => alert("HealthBoxes App. Version 1.0")}>
+              <Icon name="info" style={styles.ico} />
+            </Button>
+          </FooterTab>
+        </Footer>
+      </Container>
+    );
+  }
+}
+
+var { height, width } = Dimensions.get("window");
+
+var styles = StyleSheet.create({
+  viewcontain: {
+    backgroundColor: "#ffffff"
+  },
+
+  topsmall: {
+    height: 330,
+    backgroundColor: "white"
+  },
+
+  figurecontain1: {
+    height: 30,
+    backgroundColor: "yellow",
+    position: "absolute",
+    bottom: 0,
+    width: width
+  },
+
+  figurecontain2: {
+    height: 30,
+    backgroundColor: "green",
+    position: "absolute",
+    bottom: 30,
+    width: width
+  },
+
+  thefigure: {
+    fontWeight: "600",
+    fontSize: 20
+  },
+  bottom: {
+    backgroundColor: "white",
+    alignSelf: "center",
+    maxWidth: width * 0.8,
+    marginTop: 20,
+    height: height * 0.5
+  },
+  ctxt: {
+    color: "#ffffff",
+    fontWeight: "500",
+    alignSelf: "center",
+    textAlign: "center",
+    fontSize: 17,
+    marginTop: 10
+  },
+
+  box: {
+    alignItems: "center",
+    justifyContent: "center",
+
+    marginTop: width * 0.015
+  },
+  headicon: {
+    fontSize: 40,
+    color: "white",
+    alignSelf: "center"
+  },
+
+  ico: {
+    color: "#efefef",
+    fontSize: 27
+  },
+  juxt: {
+    justifyContent: "center",
+    maxWidth: width,
+    alignItems: "center"
+  },
+
+  foot: {
+    backgroundColor: "#f26c4d"
+  },
+  dashimg: {
+    maxWidth: width,
+    height: 250
+  },
+
+  callbutton: {
+    backgroundColor: "#f26c4d",
+    marginTop: 20,
+    marginTop: 10,
+    width: 200,
+    alignSelf: "center",
+    justifyContent: "center"
+  },
+  cbuttontxt: {
+    color: "white",
+    textAlign: "center",
+    fontWeight: "600"
+  },
+
+  modalchild: {
+    width: width * 0.7,
+    backgroundColor: "white",
+    alignSelf: "center",
+    alignItems: "center",
+    height: undefined,
+    padding: 22
+  },
+
+  closebutt: {
+    width: 100,
+    backgroundColor: "#efefef",
+    alignSelf: "center",
+    justifyContent: "center",
+    marginTop: 30
+  },
+
+  dname: {
+    fontSize: 20,
+    fontWeight: "600",
+    marginVertical: 25,
+    color: "#181818",
+    alignSelf: "center"
+  }
+});
