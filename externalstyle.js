@@ -35,5 +35,12 @@ module.exports = {
     fontSize: 40,
     color: "white",
     alignSelf: "center"
+  },
+
+  newfootie: {
+    backgroundColor: "white",
+    height: 0,
+    width: 0,
+    shadowOpacity: 0
   }
 };

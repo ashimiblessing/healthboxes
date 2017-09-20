@@ -46,6 +46,8 @@ var ImagePicker = require("react-native-image-picker");
 
 import * as firebase from "firebase";
 
+import xstyles from "./externalstyle";
+
 // More info on all the options is below in the README...just some common use cases shown here
 var options = {
   title: "Select Record",
@@ -193,23 +195,7 @@ export default class Viewer extends Component {
             </Row>
           </Grid>
         </Content>
-
-        <Footer style={styles.foot}>
-          <FooterTab>
-            <Button onPress={() => navigate("Home")}>
-              <Icon name="home" style={styles.ico} />
-            </Button>
-            <Button onPress={() => navigate("User")}>
-              <Icon name="account-circle" style={styles.ico} />
-            </Button>
-            <Button onPress={() => this.signOut()}>
-              <Icon name="highlight-off" style={styles.ico} />
-            </Button>
-            <Button onPress={() => alert("HealthBoxes App. Version 1.0")}>
-              <Icon name="info" style={styles.ico} />
-            </Button>
-          </FooterTab>
-        </Footer>
+        <Footer style={xstyles.newfootie} />
       </Container>
     );
   }

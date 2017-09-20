@@ -43,6 +43,7 @@ import {
 import Icon from "react-native-vector-icons/FontAwesome";
 
 import { StackNavigator } from "react-navigation";
+import xstyles from "./externalstyle";
 
 export default class showRecord extends Component {
   static navigationOptions = {
@@ -94,22 +95,7 @@ export default class showRecord extends Component {
           </Grid>
         </Content>
 
-        <Footer style={styles.foot}>
-          <FooterTab>
-            <Button onPress={() => navigate("Home")}>
-              <Icon name="home" style={styles.ico} />
-            </Button>
-            <Button onPress={() => navigate("Home")}>
-              <Icon name="user-circle" style={styles.ico} />
-            </Button>
-            <Button onPress={() => navigate("Home")}>
-              <Icon name="cog" style={styles.ico} />
-            </Button>
-            <Button onPress={() => alert("HealthBoxes App. Version 1.0")}>
-              <Icon name="info" style={styles.ico} />
-            </Button>
-          </FooterTab>
-        </Footer>
+        <Footer style={xstyles.newfootie} />
       </Container>
     );
   }

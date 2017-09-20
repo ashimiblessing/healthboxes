@@ -42,6 +42,7 @@ import {
 import Icon from "react-native-vector-icons/FontAwesome";
 
 import { StackNavigator } from "react-navigation";
+import xstyles from "./externalstyle";
 
 export default class Record extends Component {
   static navigationOptions = {

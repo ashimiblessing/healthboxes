@@ -298,22 +298,7 @@ const { params } = this.props.navigation.state;
           {this.renderButtonOrSpinner()}
         </Content>
 
-        <Footer style={xstyles.foot}>
-          <FooterTab>
-            <Button onPress={() => navigate("Home")}>
-              <Icon name="home" style={xstyles.ico} />
-            </Button>
-            <Button onPress={() => navigate("User")}>
-              <Icon name="account-circle" style={xstyles.ico} />
-            </Button>
-            <Button onPress={() => this.signOut()}>
-              <Icon name="highlight-off" style={xstyles.ico} />
-            </Button>
-            <Button onPress={() => navigate("addCard")}>
-              <Icon name="info" style={xstyles.ico} />
-            </Button>
-          </FooterTab>
-        </Footer>
+        <Footer style={xstyles.newfootie} />
       </Container>
     );
   }

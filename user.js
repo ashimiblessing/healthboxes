@@ -45,6 +45,8 @@ import DateTimePicker from "react-native-modal-datetime-picker";
 
 import { StackNavigator } from "react-navigation";
 
+import xstyles from "./externalstyle";
+
 textisize = function(size, color = "#191919", weight = "500") {
   return {
     alignSelf: "center",
@@ -153,22 +155,7 @@ export default class User extends Component {
           </Grid>
         </Content>
 
-        <Footer style={styles.foot}>
-          <FooterTab>
-            <Button onPress={() => navigate("Home")}>
-              <Icon name="home" style={styles.ico} />
-            </Button>
-            <Button onPress={() => navigate("User")}>
-              <Icon name="account-circle" style={styles.ico} />
-            </Button>
-            <Button onPress={() => this.signOut()}>
-              <Icon name="highlight-off" style={styles.ico} />
-            </Button>
-            <Button onPress={() => alert("HealthBoxes App. Version 1.0")}>
-              <Icon name="info" style={styles.ico} />
-            </Button>
-          </FooterTab>
-        </Footer>
+        <Footer style={xstyles.newfootie} />
       </Container>
     );
   }

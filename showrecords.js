@@ -44,6 +44,7 @@ import {
 import Icon from "react-native-vector-icons/MaterialIcons";
 
 import { StackNavigator } from "react-navigation";
+import xstyles from "./externalstyle";
 
 export default class showRecord extends Component {
   static navigationOptions = {
@@ -194,22 +195,7 @@ export default class showRecord extends Component {
               <Row />
             </Grid>
           </Content>
-          <Footer style={styles.foot}>
-            <FooterTab>
-              <Button onPress={() => navigate("Home")}>
-                <Icon name="home" style={styles.ico} />
-              </Button>
-              <Button onPress={() => navigate("User")}>
-                <Icon name="account-circle" style={styles.ico} />
-              </Button>
-              <Button onPress={() => this.signOut()}>
-                <Icon name="highlight-off" style={styles.ico} />
-              </Button>
-              <Button onPress={() => navigate("scanCard")}>
-                <Icon name="info" style={styles.ico} />
-              </Button>
-            </FooterTab>
-          </Footer>
+          <Footer style={xstyles.newfootie} />
         </Container>
       );
     } else {

@@ -60,6 +60,7 @@ import * as firebase from "firebase";
 import SideBar from "./sidebar";
 
 import User from "./user";
+import xstyles from "./externalstyle";
 
 boxingStyle = function(myColor) {
   return {
@@ -365,7 +366,7 @@ export default class HomeScreen extends Component {
             </Grid>
           </Content>
 
-          <Footer style={styles.newfootie} />
+          <Footer style={xstyles.newfootie} />
         </Container>
       </Drawer>
     );
@@ -502,11 +503,5 @@ var styles = StyleSheet.create({
 
   tinklerow: {
     marginHorizontal: width * 0.4
-  },
-  newfootie: {
-    backgroundColor: "white",
-    height: 0,
-    width: 0,
-    shadowOpacity: 0
   }
 });

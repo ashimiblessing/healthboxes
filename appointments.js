@@ -43,6 +43,7 @@ import {
 
 import Icon from "react-native-vector-icons/MaterialIcons";
 import DateTimePicker from "react-native-modal-datetime-picker";
+import xstyles from "./externalstyle";
 
 import { StackNavigator } from "react-navigation";
 
@@ -264,22 +265,7 @@ export default class Appointments extends Component {
             </Grid>
           </Content>
 
-          <Footer style={styles.foot}>
-            <FooterTab>
-              <Button onPress={() => navigate("Home")}>
-                <Icon name="home" style={styles.ico} />
-              </Button>
-              <Button onPress={() => navigate("User")}>
-                <Icon name="account-circle" style={styles.ico} />
-              </Button>
-              <Button onPress={() => this.signOut()}>
-                <Icon name="highlight-off" style={styles.ico} />
-              </Button>
-              <Button onPress={() => alert("HealthBoxes App. Version 1.0")}>
-                <Icon name="info" style={styles.ico} />
-              </Button>
-            </FooterTab>
-          </Footer>
+          <Footer style={xstyles.newfootie} />
         </Container>
       );
     } else {
