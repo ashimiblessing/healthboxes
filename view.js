@@ -143,6 +143,7 @@ export default class Viewer extends Component {
   render() {
     const { navigate } = this.props.navigation;
     const { params } = this.props.navigation.state;
+    const { goBack } = this.props.navigation;
     var messag = params.message;
     if (messag != null) {
       alert(messag);
@@ -154,11 +155,17 @@ export default class Viewer extends Component {
           androidStatusBarColor="#394753"
         >
           <StatusBar barStyle="light-content" />
+
+          <Left>
+            <Button transparent onPress={() => navigate("Home")}>
+              <Icon name="keyboard-arrow-left" style={styles.ico} />
+            </Button>
+          </Left>
+
           <Body>
-            <Text style={textisize(20, "white", "500")}>
-              Upload Health Record
-            </Text>
+            <Text style={textisize(20, "white", "500")}>Upload Record</Text>
           </Body>
+          <Right />
         </Header>
 
         <Content>

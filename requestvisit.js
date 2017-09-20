@@ -215,6 +215,7 @@ export default class requestVisit extends Component {
   render() {
     const { navigate } = this.props.navigation;
     const { params } = this.props.navigation.state;
+    const { goBack } = this.props.navigation;
     let min = new Date();
 
     return (
@@ -222,9 +223,15 @@ export default class requestVisit extends Component {
         <Header style={styles.headr} androidStatusBarColor="#394753">
           <StatusBar barStyle="light-content" />
 
+          <Left>
+            <Button transparent onPress={() => goBack(null)}>
+              <Icon name="keyboard-arrow-left" style={styles.ico} />
+            </Button>
+          </Left>
           <Body>
-            <Text style={styles.headtxt}>Request A Home Visit</Text>
+            <Text style={styles.headtxt}>Home Visit</Text>
           </Body>
+          <Right />
         </Header>
         <Content>
           <Grid style={styles.viewcontain}>

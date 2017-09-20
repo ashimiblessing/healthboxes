@@ -127,6 +127,7 @@ export default class showRecord extends Component {
   render() {
     const { navigate } = this.props.navigation;
     const { params } = this.props.navigation.state;
+    const { goBack } = this.props.navigation;
 
     if (typeof params !== "undefined") {
       var pp = params.parami;
@@ -141,9 +142,17 @@ export default class showRecord extends Component {
             androidStatusBarColor="#394753"
           >
             <StatusBar barStyle="light-content" />
+
+            <Left>
+              <Button transparent onPress={() => navigate("Home")}>
+                <Icon name="keyboard-arrow-left" style={styles.ico} />
+              </Button>
+            </Left>
             <Body>
               <Text style={textisize(20, "white", "500")}>Dashboard</Text>
             </Body>
+
+            <Right />
           </Header>
           <Content>
             <Grid>

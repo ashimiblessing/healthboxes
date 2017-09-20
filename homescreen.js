@@ -225,6 +225,7 @@ export default class HomeScreen extends Component {
   render() {
     const { navigate } = this.props.navigation;
     const { params } = this.props.navigation.state;
+    const { goBack } = this.props.navigation;
 
     closeDrawer = () => {
       this.drawer._root.close();

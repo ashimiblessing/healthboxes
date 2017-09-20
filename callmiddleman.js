@@ -180,6 +180,7 @@ export default class callMiddleMan extends Component {
   render() {
     const { navigate } = this.props.navigation;
     const { params } = this.props.navigation.state;
+    const { goBack } = this.props.navigation;
 
     return (
       <Container>
@@ -188,9 +189,18 @@ export default class callMiddleMan extends Component {
           androidStatusBarColor="#394753"
         >
           <StatusBar barStyle="light-content" />
+
+          <Left>
+            <Button transparent onPress={() => goBack()}>
+              <Icon name="keyboard-arrow-left" style={styles.ico} />
+            </Button>
+          </Left>
+
           <Body>
             <Text style={textisize(20, "white", "500")}>Please wait...</Text>
           </Body>
+
+          <Right />
         </Header>
         <Content>
           <View>

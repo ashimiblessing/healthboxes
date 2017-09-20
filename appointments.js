@@ -179,6 +179,7 @@ export default class Appointments extends Component {
   render() {
     const { navigate } = this.props.navigation;
     const { params } = this.props.navigation.state;
+    const { goBack } = this.props.navigation;
     let min = new Date();
 
     if (params.appoint == "book") {
@@ -187,9 +188,17 @@ export default class Appointments extends Component {
           <Header style={styles.headr} androidStatusBarColor="#394753">
             <StatusBar barStyle="light-content" />
 
+            <Left>
+              <Button transparent onPress={() => goBack()}>
+                <Icon name="keyboard-arrow-left" style={styles.ico} />
+              </Button>
+            </Left>
+
             <Body>
               <Text style={styles.headtxt}>Appointments</Text>
             </Body>
+
+            <Right />
           </Header>
           <Content>
             <Grid style={styles.viewcontain}>
