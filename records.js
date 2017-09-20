@@ -54,7 +54,8 @@ export default class Record extends Component {
 
     this.state = {
       animating: true,
-      myfetched: null
+      myfetched: null,
+      loading: false
     };
   }
 
@@ -71,6 +72,9 @@ export default class Record extends Component {
   }
 
   componentWillMount() {
+    this.setState({
+      loading: true
+    });
     const { navigate } = this.props.navigation;
 
     fetch("https://citiwebb.com/healthboxes/recordlisting.php")
@@ -111,7 +115,7 @@ export default class Record extends Component {
     return (
       <View>
         <ActivityIndicator
-          animating={true}
+          animating={this.state.loading}
           style={[styles.centering, { height: 80, marginTop: 60 }]}
           size="large"
           color="green"

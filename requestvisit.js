@@ -47,6 +47,7 @@ import DateTimePicker from "react-native-modal-datetime-picker";
 import * as firebase from "firebase";
 
 import { StackNavigator } from "react-navigation";
+var dismissKeyboard = require("dismissKeyboard");
 
 textisize = function(size, color = "#191919", weight = "500") {
   return {
@@ -165,6 +166,10 @@ export default class requestVisit extends Component {
 
 */
     }
+  }
+
+  dismissKeyboardAction() {
+    dismissKeyboard();
   }
 
   renderButtonOrSpinner() {

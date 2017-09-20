@@ -54,7 +54,7 @@ import {
 
 import Icon from "react-native-vector-icons/MaterialIcons";
 
-import { StackNavigator } from "react-navigation";
+import { StackNavigator, DrawerNavigator } from "react-navigation";
 import { NavigationActions } from "react-navigation";
 import * as firebase from "firebase";
 

@@ -38,7 +38,7 @@ import {
   Col
 } from "native-base";
 
-import Icon from "react-native-vector-icons/FontAwesome";
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 import { StackNavigator } from "react-navigation";
 
@@ -153,15 +153,18 @@ export default class Viewer extends Component {
         >
           <StatusBar barStyle="light-content" />
           <Body>
-            <Text style={textisize(20, "white", "500")}>Dashboard</Text>
+            <Text style={textisize(20, "white", "500")}>
+              Upload Health Record
+            </Text>
           </Body>
         </Header>
 
         <Content>
           <ActivityIndicator
             animating={this.state.animating}
-            style={[styles.centering, { height: 50 }]}
+            style={styles.centering}
             size="large"
+            color="green"
           />
 
           <Grid style={styles.viewcontain}>
@@ -181,7 +184,7 @@ export default class Viewer extends Component {
                 </Text>
 
                 <Button
-                  onPress={this.mycomponenti.bind(this)}
+                  onPress={() => this.mycomponenti()}
                   style={styles.button2}
                 >
                   <Text style={styles.buttontxt}>Select to Upload</Text>
@@ -197,7 +200,7 @@ export default class Viewer extends Component {
               <Icon name="home" style={styles.ico} />
             </Button>
             <Button onPress={() => navigate("User")}>
-              <Icon name="user-circle" style={styles.ico} />
+              <Icon name="account-circle" style={styles.ico} />
             </Button>
             <Button onPress={() => this.signOut()}>
               <Icon name="highlight-off" style={styles.ico} />
@@ -231,7 +234,8 @@ var styles = StyleSheet.create({
   button2: {
     backgroundColor: "#f26c4d",
     marginTop: 20,
-    alignSelf: "center"
+    alignSelf: "center",
+    marginBottom: 40
   },
   buttontxt: {
     color: "white",

@@ -18,7 +18,8 @@ import {
   Dimensions,
   WebView,
   StatusBar,
-  NativeModules
+  NativeModules,
+  BackHandler
 } from "react-native";
 import {
   Container,
@@ -186,6 +187,7 @@ export default class chargeCustomer extends Component {
               alert(
                 "Home visit booked. We will contact you as soon as possible"
               );
+              navigate("Home");
               //alert(data.reference);
               this.setState({ loading: false });
             } else {
@@ -222,6 +224,21 @@ export default class chargeCustomer extends Component {
 
   async componentDidMount() {
     const { navigate } = this.props.navigation;
+
+    BackHandler.addEventListener("hardwareBackPress", () => {
+      try {
+        navigate("Home");
+        return true;
+      } catch (err) {
+        console.debug("Can't pop. Exiting the app...");
+        return false;
+      }
+    });
+  }
+
+  componentWillUnmount() {
+    console.log("Unmounting app, removing listeners");
+    BackHandler.removeEventListener("hardwareBackPress");
   }
 
   renderButtonOrSpinner() {

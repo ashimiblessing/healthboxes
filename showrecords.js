@@ -16,7 +16,8 @@ import {
   Text,
   TouchableHighlight,
   Dimensions,
-  WebView
+  WebView,
+  StatusBar
 } from "react-native";
 import {
   Container,
@@ -40,7 +41,7 @@ import {
   ListItem
 } from "native-base";
 
-import Icon from "react-native-vector-icons/FontAwesome";
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 import { StackNavigator } from "react-navigation";
 
@@ -50,94 +51,177 @@ export default class showRecord extends Component {
     header: false
   };
 
+  state = {
+    animating: true,
+    myfetched: "",
+    loading: true
+  };
+
   constructor(props) {
     super(props);
   }
 
-  componentDidMount() {
+  async signOut() {
     const { navigate } = this.props.navigation;
+
+    AsyncStorage.removeItem("logincookie");
+    await firebase.auth().signOut();
+
+    navigate("Welcome", { message: "Please Login" });
+  }
+
+  async componentWillMount() {
+    const { navigate } = this.props.navigation;
+
+    fetch("https://citiwebb.com/healthboxes/recordlisting.php")
+      .then(function(response) {
+        var recieved = JSON.parse(response._bodyText);
+
+        AsyncStorage.setItem("myRecords", JSON.stringify(recieved));
+
+        //  alert(recieved);
+        //  navigate("Showrecord", { rec: recieved });
+      })
+      .catch(function(err) {
+        // Error :(
+      });
+
+    //the second typeof
+    /*
+    try {
+      const value = await AsyncStorage.getItem("myRecords");
+      if (value !== null) {
+        var pp2 = JSON.parse(params.value);
+        var plenght2 = pp2.lenght;
+        this.setState({
+          myfetched: value
+        });
+      }
+    } catch (error) {
+      // Error retrieving data
+    }
+
+    */
+  }
+
+  componentDidMount() {
+    const { params } = this.props.navigation.state;
+
+    if (typeof params == "undefined") {
+      AsyncStorage.getItem("myRecords").then(items => {
+        var myitems = JSON.parse(items);
+
+        this.updateItems(myitems);
+      });
+    }
+  }
+
+  updateItems(myitems) {
+    var pp = myitems;
+
+    const { navigate } = this.props.navigation;
+    navigate("Showrecord", { parami: myitems });
   }
 
   render() {
     const { navigate } = this.props.navigation;
     const { params } = this.props.navigation.state;
-    var pp = JSON.parse(params.rec);
-    var plenght = pp.lenght;
 
-    return (
-      <Container style={{ backgroundColor: "white", justifyContent: "center" }}>
-        <Header />
-        <Content>
-          <Grid>
-            <Row>
-              <Col style={{ marginLeft: 10 }}>
-                <Text
-                  style={{
-                    fontWeight: "bold",
-                    fontSize: 20,
-                    alignSelf: "center",
-                    marginTop: 20
-                  }}
-                >
-                  Uploaded Records
-                </Text>
+    if (typeof params !== "undefined") {
+      var pp = params.parami;
+      //  var plenght = pp.lenght;
 
-                <List
-                  dataArray={pp}
-                  renderRow={item =>
-                    <ListItem>
-                      <Text style={styles.normaltxt}>
-                        {item}
-                      </Text>
-                    </ListItem>}
-                />
+      return (
+        <Container
+          style={{ backgroundColor: "white", justifyContent: "center" }}
+        >
+          <Header
+            style={{ backgroundColor: "#f26c4d" }}
+            androidStatusBarColor="#394753"
+          >
+            <StatusBar barStyle="light-content" />
+            <Body>
+              <Text style={textisize(20, "white", "500")}>Dashboard</Text>
+            </Body>
+          </Header>
+          <Content>
+            <Grid>
+              <Row>
+                <Col style={{ marginLeft: 10 }}>
+                  <Text
+                    style={{
+                      fontWeight: "bold",
+                      fontSize: 20,
+                      alignSelf: "center",
+                      marginTop: 20
+                    }}
+                  >
+                    Uploaded Records
+                  </Text>
+                  <List
+                    dataArray={pp}
+                    renderRow={item =>
+                      <ListItem>
+                        <Text style={styles.normaltxt}>
+                          {item}
+                        </Text>
+                      </ListItem>}
+                  />
+                  <Text
+                    style={{
+                      fontWeight: "bold",
+                      fontSize: 20,
+                      alignSelf: "center",
+                      marginTop: 20
+                    }}
+                  >
+                    Your Prescriptions
+                  </Text>
 
-                <Text
-                  style={{
-                    fontWeight: "bold",
-                    fontSize: 20,
-                    alignSelf: "center",
-                    marginTop: 20
-                  }}
-                >
-                  Your Prescriptions
-                </Text>
-
-                <Text
-                  style={{
-                    fontWeight: "400",
-                    fontSize: 15,
-                    alignSelf: "center",
-                    marginTop: 20
-                  }}
-                >
-                  Nothing found.
-                </Text>
-              </Col>
-            </Row>
-            <Row />
-            <Row />
-          </Grid>
-        </Content>
-
-        <Footer style={styles.foot}>
-          <FooterTab>
-            <Button onPress={() => navigate("Home")}>
-              <Icon name="home" style={styles.ico} />
-            </Button>
-            <Button onPress={() => navigate("User")}>
-              <Icon name="user-circle" style={styles.ico} />
-            </Button>
-            <Button onPress={() => navigate("Welcome")}>
-              <Icon name="cog" style={styles.ico} />
-            </Button>
-            <Button onPress={() => alert("HealthBoxes App. Version 1.0")}>
-              <Icon name="info" style={styles.ico} />
-            </Button>
-          </FooterTab>
-        </Footer>
-      </Container>
-    );
+                  <Text
+                    style={{
+                      fontWeight: "400",
+                      fontSize: 15,
+                      alignSelf: "center",
+                      marginTop: 20
+                    }}
+                  >
+                    Nothing found.
+                  </Text>
+                </Col>
+              </Row>
+              <Row />
+              <Row />
+            </Grid>
+          </Content>
+          <Footer style={styles.foot}>
+            <FooterTab>
+              <Button onPress={() => navigate("Home")}>
+                <Icon name="home" style={styles.ico} />
+              </Button>
+              <Button onPress={() => navigate("User")}>
+                <Icon name="account-circle" style={styles.ico} />
+              </Button>
+              <Button onPress={() => this.signOut()}>
+                <Icon name="highlight-off" style={styles.ico} />
+              </Button>
+              <Button onPress={() => navigate("scanCard")}>
+                <Icon name="info" style={styles.ico} />
+              </Button>
+            </FooterTab>
+          </Footer>
+        </Container>
+      );
+    } else {
+      return (
+        <ActivityIndicator
+          animating={true}
+          style={[styles.centering, { height: 80, marginTop: 60 }]}
+          size="large"
+          color="green"
+        />
+      );
+    }
   }
 }
 
@@ -168,7 +252,7 @@ var styles = StyleSheet.create({
   },
 
   foot: {
-    backgroundColor: "#000000"
+    backgroundColor: "#494949"
   },
 
   head: {
@@ -176,7 +260,7 @@ var styles = StyleSheet.create({
   },
 
   ico: {
-    color: "red",
+    color: "white",
     fontSize: 27
   },
 

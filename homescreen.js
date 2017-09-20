@@ -24,7 +24,8 @@ import {
   Dimensions,
   TouchableOpacity,
   Linking,
-  StatusBar
+  StatusBar,
+  BackHandler
 } from "react-native";
 import {
   Container,
@@ -43,17 +44,22 @@ import {
   Label,
   Grid,
   Row,
-  Col
+  Col,
+  Drawer
 } from "native-base";
 
 import Icon from "react-native-vector-icons/MaterialIcons";
 
-import { StackNavigator } from "react-navigation";
+import { StackNavigator, DrawerNavigator } from "react-navigation";
 import RNImmediatePhoneCall from "react-native-immediate-phone-call";
 
 import Modal from "react-native-modal";
 
 import * as firebase from "firebase";
+
+import SideBar from "./sidebar";
+
+import User from "./user";
 
 boxingStyle = function(myColor) {
   return {
@@ -105,6 +111,23 @@ export default class HomeScreen extends Component {
     await firebase.auth().signOut();
 
     navigate("Welcome", { message: "Please Login" });
+  }
+
+  componentDidMount() {
+    BackHandler.addEventListener("hardwareBackPress", () => {
+      try {
+        BackHandler.exitApp();
+        return false;
+      } catch (err) {
+        console.debug("Can't pop. Exiting the app...");
+        return false;
+      }
+    });
+  }
+
+  componentWillUnmount() {
+    console.log("Unmounting app, removing listeners");
+    BackHandler.removeEventListener("hardwareBackPress");
   }
 
   componentWillMount() {
@@ -161,6 +184,7 @@ export default class HomeScreen extends Component {
         } else if (action == "homevisit") {
           navigate("requestVisit");
         } else if (action == "records") {
+          this.setState({ isModalVisible: false });
           var gowhere = "";
 
           navigate("Viewer", { parami: "account" });
@@ -191,118 +215,159 @@ export default class HomeScreen extends Component {
     }
   }
 
+  handleShowRecord() {
+    this.setState({ isModalVisible: false });
+    const { navigate } = this.props.navigation;
+    navigate("Showrecord");
+  }
+
   render() {
     const { navigate } = this.props.navigation;
     const { params } = this.props.navigation.state;
 
+    closeDrawer = () => {
+      this.drawer._root.close();
+    };
+    openDrawer = () => {
+      this.drawer._root.open();
+    };
+
     return (
-      <Container style={styles.viewcontain}>
-        <Header
-          style={{ backgroundColor: "#f26c4d" }}
-          androidStatusBarColor="#394753"
-        >
-          <StatusBar barStyle="light-content" />
-          <Body>
-            <Text style={textisize(20, "white", "500")}>Dashboard</Text>
-          </Body>
-        </Header>
-        <Content>
-          <Grid>
-            <Row style={styles.topsmall}>
-              <Col>
-                <Image
-                  source={require("./images/doctors.jpg")}
-                  style={styles.dashimg}
-                />
-              </Col>
-            </Row>
+      <Drawer
+        ref={ref => {
+          this.drawer = ref;
+        }}
+        content={<SideBar navigator={this.navigator} />}
+        onClose={() => closeDrawer()}
+      >
+        <Container style={styles.viewcontain}>
+          <Modal
+            isVisible={this.state.isModalVisible}
+            onBackButtonPress={this._hideModal}
+            onBackdropPress={this._hideModal}
+          >
+            <View style={styles.modalchild}>
+              <Text style={textisize(20)}>Select Option</Text>
 
-            <Row>
-              <Col>
-                <TouchableHighlight
-                  style={{
-                    justifyContent: "center"
-                  }}
-                >
-                  <Text style={styles.dname}>
-                    Welcome {this.state.usr}
-                  </Text>
-                </TouchableHighlight>
-              </Col>
-            </Row>
+              <Button
+                style={styles.callbutton}
+                onPress={() => this.shotiSanwo("records")}
+              >
+                <Text style={styles.cbuttontxt}>Upload Record</Text>
+              </Button>
 
-            <Row size={1} style={styles.juxt}>
-              <Col style={styles.box}>
-                <TouchableOpacity
-                  style={boxingStyle("#25363e")}
-                  onPress={() => this.shotiSanwo("call")}
-                >
-                  <Icon active name="call" style={styles.headicon} />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => this.shotiSanwo("call")}>
-                  <Text style={styles.ctxt}>Call a Doctor</Text>
-                </TouchableOpacity>
-              </Col>
-              <Col style={styles.box}>
-                <TouchableOpacity
-                  style={boxingStyle("#8b7860")}
-                  onPress={() => this.shotiSanwo("appointment")}
-                >
-                  <Icon active name="people" style={styles.headicon} />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => this.shotiSanwo("appointment")}
-                >
-                  <Text style={styles.ctxt}>Appointments</Text>
-                </TouchableOpacity>
-              </Col>
-            </Row>
-
-            <Row size={1} style={styles.juxt}>
-              <Col style={styles.box}>
-                <TouchableOpacity
-                  style={boxingStyle("#607d8b")}
-                  onPress={() => this.shotiSanwo("records")}
-                >
-                  <Icon active name="edit" style={styles.headicon} />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => this.shotiSanwo("records")}>
-                  <Text style={styles.ctxt}>Upload Records</Text>
-                </TouchableOpacity>
-              </Col>
-
-              <Col style={styles.box}>
-                <TouchableOpacity
-                  style={boxingStyle("#3e301f")}
-                  onPress={() => this.shotiSanwo("homevisit")}
-                >
-                  <Icon active name="accessibility" style={styles.headicon} />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => this.shotiSanwo("homevisit")}>
-                  <Text style={styles.ctxt}>Request Home Visit </Text>
-                </TouchableOpacity>
-              </Col>
-            </Row>
-          </Grid>
-        </Content>
-
-        <Footer style={styles.foot}>
-          <FooterTab>
-            <Button onPress={() => navigate("Home")}>
-              <Icon name="home" style={styles.ico} />
+              <Button
+                style={styles.callbutton}
+                onPress={() => this.handleShowRecord()}
+              >
+                <Text style={styles.cbuttontxt}>View Record</Text>
+              </Button>
+            </View>
+            <Button style={styles.closebutt} onPress={() => this._hideModal()}>
+              <Text style={{ color: "#191919", fontWeight: "600" }}>close</Text>
             </Button>
-            <Button onPress={() => navigate("User")}>
-              <Icon name="account-circle" style={styles.ico} />
-            </Button>
-            <Button onPress={() => this.signOut()}>
-              <Icon name="highlight-off" style={styles.ico} />
-            </Button>
-            <Button onPress={() => navigate("scanCard")}>
-              <Icon name="info" style={styles.ico} />
-            </Button>
-          </FooterTab>
-        </Footer>
-      </Container>
+          </Modal>
+
+          <Header
+            style={{ backgroundColor: "#f26c4d" }}
+            androidStatusBarColor="#394753"
+          >
+            <StatusBar barStyle="light-content" />
+            <Left>
+              <Button transparent onPress={() => openDrawer()}>
+                <Icon name="view-headline" style={styles.ico} />
+              </Button>
+            </Left>
+            <Body>
+              <Text style={textisize(20, "white", "500")}>Dashboard</Text>
+            </Body>
+            <Right />
+          </Header>
+          <Content>
+            <Grid>
+              <Row style={styles.topsmall}>
+                <Col>
+                  <Image
+                    source={require("./images/doctors.jpg")}
+                    style={styles.dashimg}
+                  />
+                </Col>
+              </Row>
+
+              <Row>
+                <Col>
+                  <TouchableHighlight
+                    style={{
+                      justifyContent: "center"
+                    }}
+                  >
+                    <Text style={styles.dname}>
+                      Welcome {this.state.usr}
+                    </Text>
+                  </TouchableHighlight>
+                </Col>
+              </Row>
+
+              <Row size={1} style={styles.juxt}>
+                <Col style={styles.box}>
+                  <TouchableOpacity
+                    style={boxingStyle("#25363e")}
+                    onPress={() => this.shotiSanwo("call")}
+                  >
+                    <Icon active name="call" style={styles.headicon} />
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => this.shotiSanwo("call")}>
+                    <Text style={styles.ctxt}>Call a Doctor</Text>
+                  </TouchableOpacity>
+                </Col>
+                <Col style={styles.box}>
+                  <TouchableOpacity
+                    style={boxingStyle("#8b7860")}
+                    onPress={() => this.shotiSanwo("appointment")}
+                  >
+                    <Icon active name="people" style={styles.headicon} />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => this.shotiSanwo("appointment")}
+                  >
+                    <Text style={styles.ctxt}>Appointments</Text>
+                  </TouchableOpacity>
+                </Col>
+              </Row>
+
+              <Row size={1} style={styles.juxt}>
+                <Col style={styles.box}>
+                  <TouchableOpacity
+                    style={boxingStyle("#607d8b")}
+                    onPress={() => this._showModal()}
+                  >
+                    <Icon active name="edit" style={styles.headicon} />
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => this._showModal()}>
+                    <Text style={styles.ctxt}>Your Records</Text>
+                  </TouchableOpacity>
+                </Col>
+
+                <Col style={styles.box}>
+                  <TouchableOpacity
+                    style={boxingStyle("#3e301f")}
+                    onPress={() => this.shotiSanwo("homevisit")}
+                  >
+                    <Icon active name="accessibility" style={styles.headicon} />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => this.shotiSanwo("homevisit")}
+                  >
+                    <Text style={styles.ctxt}>Request Home Visit </Text>
+                  </TouchableOpacity>
+                </Col>
+              </Row>
+            </Grid>
+          </Content>
+
+          <Footer style={styles.newfootie} />
+        </Container>
+      </Drawer>
     );
   }
 }
@@ -361,7 +426,7 @@ var styles = StyleSheet.create({
     justifyContent: "center",
 
     marginTop: width * 0.015,
-    marginBottom: 30
+    marginBottom: 40
   },
   headicon: {
     fontSize: 30,
@@ -437,5 +502,11 @@ var styles = StyleSheet.create({
 
   tinklerow: {
     marginHorizontal: width * 0.4
+  },
+  newfootie: {
+    backgroundColor: "white",
+    height: 0,
+    width: 0,
+    shadowOpacity: 0
   }
 });
