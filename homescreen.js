@@ -273,7 +273,7 @@ export default class HomeScreen extends Component {
         ref={ref => {
           this.drawer = ref;
         }}
-        content={<SideBar navigator={this.props.navigation} ref="foo" />}
+        content={<SideBar navigator={this.navigator} ref="foo" />}
         onClose={() => closeDrawer()}
       >
         <Container style={styles.viewcontain}>

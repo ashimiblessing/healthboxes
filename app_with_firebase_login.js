@@ -236,8 +236,7 @@ export default class Welcome extends Component {
         //grab the auth code
 
         var furl =
-          "https://healthboxes.com/healthboxes_apis/showauthcode.php?email=" +
-          email;
+          "https://healthboxes.com/healthboxes_apis/showauthcode.php?email=" + email;
 
         fetch(furl).then(response => response.json()).then(data => {
           //var recieved = JSON.parse(response._bodyText);

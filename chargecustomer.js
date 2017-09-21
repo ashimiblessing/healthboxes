@@ -104,7 +104,7 @@ export default class chargeCustomer extends Component {
           // We have data!!
 
           var furl =
-            "https://citiwebb.com/healthboxes/chargereturncustomer.php?email=" +
+            "https://healthboxes.com/healthboxes_apis/chargereturncustomer.php?email=" +
             email +
             "&amount=" +
             amount +
@@ -159,7 +159,7 @@ export default class chargeCustomer extends Component {
           // We have data!!
 
           var furl =
-            "https://citiwebb.com/healthboxes/chargereturncustomer.php?email=" +
+            "https://healthboxes.com/healthboxes_apis/chargereturncustomer.php?email=" +
             email +
             "&amount=" +
             amount +

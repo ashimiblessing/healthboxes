@@ -76,7 +76,7 @@ export default class addCard extends Component {
   }
 
   getdata() {
-    fetch("https://citiwebb.com/healthboxes/recordlisting.php").then(function(
+    fetch("https://healthboxes.com/healthboxes_apis/recordlisting.php").then(function(
       response
     ) {
       var recieved = JSON.parse(response._bodyText);

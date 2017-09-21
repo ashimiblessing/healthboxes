@@ -5,11 +5,13 @@ import {
   Text,
   StyleSheet,
   Dimensions,
-  TouchableHighlight
+  TouchableHighlight,
+  AsyncStorage
 } from "react-native";
 import { Button, Container, Content } from "native-base";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { StackNavigator, DrawerNavigator } from "react-navigation";
+import * as firebase from "firebase";
 
 //var { navigate } = this.props.navigation;
 
@@ -18,6 +20,13 @@ export class SideBar extends Component {
     const { navigate } = this.props.navigation;
 
     navigate(addr);
+  }
+
+  async signOut() {
+    AsyncStorage.removeItem("logincookie");
+    await firebase.auth().signOut();
+
+    this.props.navigation.navigate("Welcome");
   }
 
   render() {
@@ -29,22 +38,20 @@ export class SideBar extends Component {
               <Icon name="home" style={styles.ico} />
               <Text style={styles.ttxt}>Home</Text>
             </Button>
-            <Button transparent onPress={() => whereto("User")}>
-              <Icon name="account-circle" style={styles.ico} />
-              <Text style={styles.ttxt}>Profile</Text>
-            </Button>
-            <Button transparent onPress={() => this.signOut()}>
-              <Icon name="highlight-off" style={styles.ico} />
-              <Text style={styles.ttxt}>Logout</Text>
-            </Button>
+
             <Button transparent onPress={() => alert("HealthBoxes")}>
               <Icon name="info" style={styles.ico} />
               <Text style={styles.ttxt}>About</Text>
             </Button>
 
-            <Button transparent onPress={() => closeDrawer()}>
-              <Icon name="info" style={styles.ico} />
-              <Text style={styles.ttxt}>Close</Text>
+            <Button transparent onPress={() => whereto("User")}>
+              <Icon name="account-circle" style={styles.ico} />
+              <Text style={styles.ttxt}>Profile</Text>
+            </Button>
+
+            <Button transparent onPress={() => this.signOut()}>
+              <Icon name="highlight-off" style={styles.ico} />
+              <Text style={styles.ttxt}>Logout</Text>
             </Button>
           </View>
         </Content>

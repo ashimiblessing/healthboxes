@@ -84,7 +84,7 @@ export default class requestVisit extends Component {
   }
 
   getdata() {
-    fetch("https://citiwebb.com/healthboxes/recordlisting.php").then(function(
+    fetch("https://healthboxes.com/healthboxes_apis/recordlisting.php").then(function(
       response
     ) {
       var recieved = JSON.parse(response._bodyText);
@@ -123,7 +123,7 @@ export default class requestVisit extends Component {
       const { phone, email, datetime, name, address } = this.state;
 
       furl =
-        "https://citiwebb.com/healthboxes/homevisit.php?name=" +
+        "https://healthboxes.com/healthboxes_apis/homevisit.php?name=" +
         name +
         "&email=" +
         email +
@@ -142,7 +142,7 @@ export default class requestVisit extends Component {
 
 
       fetch(
-        "https://citiwebb.com/healthboxes/homevisit.php?name=" +
+        "https://healthboxes.com/healthboxes_apis/homevisit.php?name=" +
           name +
           "&email=" +
           email +

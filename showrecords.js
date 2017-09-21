@@ -74,7 +74,7 @@ export default class showRecord extends Component {
   async componentWillMount() {
     const { navigate } = this.props.navigation;
 
-    fetch("https://citiwebb.com/healthboxes/recordlisting.php")
+    fetch("https://healthboxes.com/healthboxes_apis/recordlisting.php")
       .then(function(response) {
         var recieved = JSON.parse(response._bodyText);
 

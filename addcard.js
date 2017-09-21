@@ -174,7 +174,7 @@ const { params } = this.props.navigation.state;
         // card charged successfully, get reference here
 
         var furl =
-          "https://citiwebb.com/healthboxes/grabauthcode.php?tranxref=" +
+          "https://healthboxes.com/healthboxes_apis/grabauthcode.php?tranxref=" +
           response.reference;
 
         fetch(furl).then(response => response.json()).then(data => {

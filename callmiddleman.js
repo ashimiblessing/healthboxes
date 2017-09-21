@@ -83,7 +83,7 @@ export default class callMiddleMan extends Component {
         //that means he has paid before, check if the pay is still valid
 
         var furl =
-          "https://citiwebb.com/healthboxes/validateauthpayment.php?ref=" +
+          "https://healthboxes.com/healthboxes_apis/validateauthpayment.php?ref=" +
           value;
 
         fetch(furl).then(response => response.json()).then(data => {
