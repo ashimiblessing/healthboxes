@@ -11,23 +11,25 @@ import { Button, Container, Content } from "native-base";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { StackNavigator, DrawerNavigator } from "react-navigation";
 
+//var { navigate } = this.props.navigation;
+
 export class SideBar extends Component {
+  whereto(addr) {
+    const { navigate } = this.props.navigation;
+
+    navigate(addr);
+  }
+
   render() {
     return (
       <Container>
         <Content padder>
           <View style={styles.sidebarcontain}>
-            <Button
-              transparent
-              onPress={() => this.props.navigation.navigate("Home")}
-            >
+            <Button transparent onPress={() => whereto("Home")}>
               <Icon name="home" style={styles.ico} />
               <Text style={styles.ttxt}>Home</Text>
             </Button>
-            <Button
-              transparent
-              onPress={() => this.props.navigation.navigate("User")}
-            >
+            <Button transparent onPress={() => whereto("User")}>
               <Icon name="account-circle" style={styles.ico} />
               <Text style={styles.ttxt}>Profile</Text>
             </Button>
@@ -69,4 +71,4 @@ var styles = StyleSheet.create({
   }
 });
 
-export default SideBar;
+module.exports = SideBar;

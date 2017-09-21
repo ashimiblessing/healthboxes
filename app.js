@@ -69,6 +69,7 @@ import chargeCustomer from "./chargecustomer";
 import callMiddleMan from "./callmiddleman";
 import requestVisit from "./requestvisit";
 import scanCard from "./scanCard";
+import SideBar from "./sidebar";
 
 textisize = function(size, color = "#191919", weight = "500") {
   return {
@@ -168,7 +169,6 @@ export default class Welcome extends Component {
       .auth()
       .createUserWithEmailAndPassword(email, password)
       .then(async user => {
-        this.setState({ error: "", loading: false });
         //alert("Registration Successful");
 
         try {
@@ -183,13 +183,16 @@ export default class Welcome extends Component {
               await AsyncStorage.setItem("email", "" + email);
               await AsyncStorage.setItem("displayName", "" + displayName);
 
-              navigate("addCard");
+              navigate("Home");
+
+              this.setState({ error: "", loading: false });
 
               // Update is now successful.
             })
             .catch(function(error) {
               // An error happened.
               alert(error);
+              this.setState({ error: "", loading: false });
             });
         } catch (error) {
           // Error saving data
@@ -357,7 +360,7 @@ export default class Welcome extends Component {
                     <Item>
                       <Icon active name="person" style={styles.lico} />
                       <Input
-                        placeholder="Your name "
+                        placeholder="Nickname"
                         value={this.state.displayName}
                         onChangeText={displayName =>
                           this.setState({ displayName })}
@@ -367,7 +370,7 @@ export default class Welcome extends Component {
                     <Item>
                       <Icon active name="email" style={styles.lico} />
                       <Input
-                        placeholder="Your email "
+                        placeholder="Email "
                         value={this.state.email}
                         onChangeText={email => this.setState({ email })}
                       />

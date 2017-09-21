@@ -87,6 +87,35 @@ textisize = function(size, color = "#191919", weight = "500") {
   };
 };
 
+const SideBars = props =>
+  <Container>
+    <Content padder>
+      <View style={styles.sidebarcontain}>
+        <Button transparent onPress={() => navigate("Home")}>
+          <Icon name="home" style={styles.ico} />
+          <Text style={styles.ttxt}>Home</Text>
+        </Button>
+        <Button transparent onPress={() => navigation.navigate("User")}>
+          <Icon name="account-circle" style={styles.ico} />
+          <Text style={styles.ttxt}>Profile</Text>
+        </Button>
+        <Button transparent onPress={() => this.signOut()}>
+          <Icon name="highlight-off" style={styles.ico} />
+          <Text style={styles.ttxt}>Logout</Text>
+        </Button>
+        <Button transparent onPress={() => alert("HealthBoxes")}>
+          <Icon name="info" style={styles.ico} />
+          <Text style={styles.ttxt}>About</Text>
+        </Button>
+
+        <Button transparent onPress={() => closeDrawer()}>
+          <Icon name="info" style={styles.ico} />
+          <Text style={styles.ttxt}>Close</Text>
+        </Button>
+      </View>
+    </Content>
+  </Container>;
+
 export default class HomeScreen extends Component {
   static navigationOptions = {
     title: "HealthBoxes",
@@ -230,6 +259,11 @@ export default class HomeScreen extends Component {
     closeDrawer = () => {
       this.drawer._root.close();
     };
+
+    whereto = addr => {
+      this.props.navigation.navigate(addr);
+    };
+
     openDrawer = () => {
       this.drawer._root.open();
     };
@@ -239,7 +273,7 @@ export default class HomeScreen extends Component {
         ref={ref => {
           this.drawer = ref;
         }}
-        content={<SideBar navigator={this.navigator} />}
+        content={<SideBar navigator={this.props.navigation} ref="foo" />}
         onClose={() => closeDrawer()}
       >
         <Container style={styles.viewcontain}>
