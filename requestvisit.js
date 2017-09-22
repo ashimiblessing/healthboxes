@@ -84,9 +84,9 @@ export default class requestVisit extends Component {
   }
 
   getdata() {
-    fetch("https://healthboxes.com/healthboxes_apis/recordlisting.php").then(function(
-      response
-    ) {
+    fetch(
+      "https://healthboxes.com/healthboxes_apis/recordlisting.php"
+    ).then(function(response) {
       var recieved = JSON.parse(response._bodyText);
     });
 
@@ -99,7 +99,6 @@ export default class requestVisit extends Component {
     const { navigate } = this.props.navigation;
 
     AsyncStorage.removeItem("logincookie");
-    await firebase.auth().signOut();
 
     navigate("Welcome", { message: "Please Login" });
   }
@@ -135,37 +134,6 @@ export default class requestVisit extends Component {
         datetime;
 
       navigate("chargeCustomer", { parami: "10000", value: furl });
-
-      /*
-
-
-
-
-      fetch(
-        "https://healthboxes.com/healthboxes_apis/homevisit.php?name=" +
-          name +
-          "&email=" +
-          email +
-          "&phone=" +
-          phone +
-          "&address=" +
-          address +
-          "&datetime=" +
-          datetime
-      ).then(response => {
-        var recieved = JSON.parse(response._bodyText);
-        const { navigate } = this.props.navigation;
-
-        navigate("Home", { booking: "homevisit" });
-
-        alert(recieved);
-      });
-    } else {
-      alert("Fields cannot be empty");
-
-
-
-*/
     }
   }
 
@@ -206,8 +174,19 @@ export default class requestVisit extends Component {
     );
   }
 
-  componentWillMount() {
+  async componentWillMount() {
     const { navigate } = this.props.navigation;
+
+    try {
+      //this block is for setting/saving via asyncstorage on phone
+
+      var email = await AsyncStorage.getItem("email");
+      var phone = await AsyncStorage.getItem("phone");
+      this.setState({ umail: email, uphone: phone });
+    } catch (error) {
+      // Error saving data
+      //alert(error);
+    }
   }
 
   async componentDidMount() {}

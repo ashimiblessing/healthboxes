@@ -55,8 +55,6 @@ import RNImmediatePhoneCall from "react-native-immediate-phone-call";
 
 import Modal from "react-native-modal";
 
-import * as firebase from "firebase";
-
 import SideBar from "./sidebar";
 
 import User from "./user";
@@ -138,7 +136,6 @@ export default class HomeScreen extends Component {
     const { navigate } = this.props.navigation;
 
     AsyncStorage.removeItem("logincookie");
-    await firebase.auth().signOut();
 
     navigate("Welcome", { message: "Please Login" });
   }
@@ -146,7 +143,7 @@ export default class HomeScreen extends Component {
   componentDidMount() {
     BackHandler.addEventListener("hardwareBackPress", () => {
       try {
-        BackHandler.exitApp();
+        //  BackHandler.exitApp();
         return false;
       } catch (err) {
         console.debug("Can't pop. Exiting the app...");
@@ -160,39 +157,22 @@ export default class HomeScreen extends Component {
     BackHandler.removeEventListener("hardwareBackPress");
   }
 
-  componentWillMount() {
-    var user = firebase.auth().currentUser;
-    if (user != null) {
-      this.setState({ usr: user.displayName });
-    } else {
-      const dname = "User";
+  async componentWillMount() {
+    var user = "User";
+
+    try {
+      const vals = await AsyncStorage.getItem("displayName");
+
+      if (vals != null) {
+        this.setState({ usr: vals });
+      } else {
+        const dname = "User";
+      }
+    } catch (error) {
+      this.setState({ usr: "User!" });
     }
 
     //  var user = firebase.auth().currentUser;
-    //alert(user.displayName);
-    /*
-
-
-
-
-
-
-    var user = firebase.auth().currentUser;
-
-    if (user) {
-      // User is signed in.
-    } else {
-      const { navigate } = this.props.navigation;
-
-      AsyncStorage.removeItem("logincookie");
-      await firebase.auth().signOut();
-
-      navigate("Welcome", { message: "Session Closed" });
-
-      // No user is signed in.
-    }
-
-      */
   }
 
   async shotiSanwo(action) {

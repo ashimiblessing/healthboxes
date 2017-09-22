@@ -24,9 +24,8 @@ export class SideBar extends Component {
 
   async signOut() {
     AsyncStorage.removeItem("logincookie");
-    await firebase.auth().signOut();
 
-    this.props.navigation.navigate("Welcome");
+    whereto("Welcome");
   }
 
   render() {

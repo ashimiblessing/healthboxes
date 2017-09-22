@@ -106,79 +106,45 @@ export default class Welcome extends Component {
 
   async componentWillMount() {
     const { navigate } = this.props.navigation;
-    if (firebase.apps.length === 0) {
-      // Initialize Firebase
-      const { navigate } = this.props.navigation;
-      firebase.initializeApp({
-        apiKey: "AIzaSyDndyT_49VEIftlHTikuyS-ciYfyPtznpI",
-        authDomain: "health-boxes.firebaseapp.com",
-        databaseURL: "https://health-boxes.firebaseio.com",
-        projectId: "health-boxes",
-        storageBucket: "",
-        messagingSenderId: "715439203741"
-      });
-    }
-
-    /*
-
-
-
-    var user = firebase.auth().currentUser;
-
-    if (user) {
-      navigate("Home", { message: "Login Successful" });
-      // User is signed in.
-    } else {
-      //remove saved cookie, controversial?
-
-      AsyncStorage.removeItem("logincookie");
-
-      // No user is signed in.
-    }
-
-    /*
-
-    try {
-      const value = await AsyncStorage.getItem("logincookie");
-      if (value !== null) {
-        navigate("Home", { message: "Login Successful" });
-        console.log(value);
-      }
-    } catch (error) {
-      // Error retrieving data
-      alert(error);
-      //alert("Sorry, cannot access storage");
-    }
-
-
-
-
-    // Get a reference to the database service
-    var database = firebase.database();
-
-
-    */
   }
 
-  signupHandler() {
-    const { navigate } = this.props.navigation;
-    this.setState({ error: "", loading: true });
+  async signupHandler() {
     const { email, password, displayName, phoneNumber } = this.state;
 
-    firebase
-      .auth()
-      .createUserWithEmailAndPassword(email, password)
-      .then(async user => {
-        //alert("Registration Successful");
+    if (phoneNumber.length < 7 || isNaN(phoneNumber)) {
+      this.setState({
+        error: "Please enter a valid phone number",
+        loading: false
+      });
+    } else if (password.length < 6) {
+      this.setState({
+        error: "Your password must be more than six characters",
+        loading: false
+      });
+    } else if (
+      email !== "" &&
+      password !== "" &&
+      (phoneNumber !== "") & (displayName !== "")
+    ) {
+      const { navigate } = this.props.navigation;
+      this.setState({ error: "", loading: true });
+      const { email, password, displayName, phoneNumber } = this.state;
 
-        try {
-          var user = firebase.auth().currentUser;
+      var furl1 =
+        "http://healthboxes.com/mobile_reg.php?email=" +
+        email.trim() +
+        "&password=" +
+        password.trim() +
+        "&username=" +
+        displayName.trim() +
+        "&phone_number=" +
+        phoneNumber.trim();
 
-          user
-            .updateProfile({
-              displayName: displayName
-            })
-            .then(async function() {
+      fetch(furl1)
+        .then(response => response.json())
+        .then(async data => {
+          if (data.status) {
+            try {
               await AsyncStorage.setItem("logincookie", "I like to save it.");
               await AsyncStorage.setItem("email", "" + email);
               await AsyncStorage.setItem("displayName", "" + displayName);
@@ -186,26 +152,23 @@ export default class Welcome extends Component {
               navigate("Home");
 
               this.setState({ error: "", loading: false });
-
-              // Update is now successful.
-            })
-            .catch(function(error) {
-              // An error happened.
-              alert(error);
-              this.setState({ error: "", loading: false });
-            });
-        } catch (error) {
-          // Error saving data
-          alert(error);
-        }
-      })
-      .catch(error => {
-        alert(error);
-        this.setState({
-          error: "" + error,
-          loading: false
+            } catch (error) {
+              //  alert(error);
+              //  this.setState({ error: "", loading: false });
+            }
+          } else {
+            this.setState({ error: data.message, loading: false });
+          }
+        })
+        .catch(error => {
+          this.setState({ error: error, loading: false });
         });
+    } else {
+      this.setState({
+        error: "One or more items are empty. Please fill everything",
+        loading: false
       });
+    }
   }
 
   async loginHandler() {
@@ -213,61 +176,76 @@ export default class Welcome extends Component {
 
     this.setState({ error: "", loading: true });
     const { email, password } = this.state;
+    var furl0 =
+      "http://healthboxes.com/mobile_auth.php?email=" +
+      email.trim() +
+      "&password=" +
+      password.trim();
 
-    firebase
-      .auth()
-      .signInWithEmailAndPassword(email, password)
-      .then(async () => {
-        //login successful or not
+    fetch(furl0)
+      .then(response => response.json())
+      .then(async data => {
+        if (data.status) {
+          //login successful or not
+          //we're in then, means our login is a success!! YaY!!!!
+          //logging in..
+          try {
+            //this block is for setting/saving via asyncstorage on phone
+            await AsyncStorage.removeItem("logincookie");
+            await AsyncStorage.removeItem("email");
 
-        //logging in..
-        try {
-          await AsyncStorage.removeItem("logincookie");
-          await AsyncStorage.removeItem("email");
-
-          await AsyncStorage.setItem("logincookie", "I like to save it.");
-          await AsyncStorage.setItem("email", "" + email);
-          //  navigate("Home", { message: "Login Successful" });
-        } catch (error) {
-          // Error saving data
-          //alert(error);
-        }
-
-        //grab the auth code
-
-        var furl =
-          "https://healthboxes.com/healthboxes_apis/showauthcode.php?email=" +
-          email;
-
-        fetch(furl).then(response => response.json()).then(data => {
-          //var recieved = JSON.parse(response._bodyText);
-          //var recieved = JSON.stringify(response);
-
-          //  var status = response.status;
-
-          if (data.auth_code) {
-            AsyncStorage.setItem("auth_code", JSON.stringify(data.auth_code));
-
-            //  alert("Maga ti sanwoo!");
-
-            navigate("Home");
-            this.setState({ error: "", loading: false });
-          } else {
-            //  alert(status);
-            AsyncStorage.removeItem("auth_code");
-            //  alert("Please add a card");
-            navigate("Home");
-            this.setState({ error: "", loading: false });
+            await AsyncStorage.setItem("logincookie", "I like to save it.");
+            await AsyncStorage.setItem("email", "" + email);
+            await AsyncStorage.setItem(
+              "displayName",
+              "" + data.values.user_login
+            );
+            await AsyncStorage.setItem("phone", "" + data.values.phone);
+            //  navigate("Home", { message: "Login Successful" });
+          } catch (error) {
+            // Error saving data
+            //alert(error);
           }
-        });
+          //end of setting/saving via asyncstorage
+          //grab the auth code
+
+          var furl =
+            "https://healthboxes.com/healthboxes_apis/showauthcode.php?email=" +
+            email;
+
+          fetch(furl).then(response => response.json()).then(data => {
+            //var recieved = JSON.parse(response._bodyText);
+            //var recieved = JSON.stringify(response);
+
+            //  var status = response.status;
+
+            if (data.auth_code) {
+              AsyncStorage.setItem("auth_code", JSON.stringify(data.auth_code));
+
+              //  alert("Maga ti sanwoo!");
+
+              navigate("Home");
+              this.setState({ error: "", loading: false });
+            } else {
+              //  alert(status);
+              AsyncStorage.removeItem("auth_code");
+              //  alert("Please add a card");
+              navigate("Home");
+              this.setState({ error: "", loading: false });
+            }
+          });
+        } else {
+          this.setState({
+            error: data.msg,
+            loading: false
+          });
+        }
       })
       .catch(error => {
         this.setState({
           error: "Authentication failed.  " + error,
           loading: false
         });
-        alert(error);
-        //Login was not successful, let's create a new account
       });
   }
 
@@ -365,6 +343,16 @@ export default class Welcome extends Component {
                         value={this.state.displayName}
                         onChangeText={displayName =>
                           this.setState({ displayName })}
+                      />
+                    </Item>
+
+                    <Item>
+                      <Icon active name="phone" style={styles.lico} />
+                      <Input
+                        placeholder="Phone Number"
+                        value={this.state.phoneNumber}
+                        onChangeText={phoneNumber =>
+                          this.setState({ phoneNumber })}
                       />
                     </Item>
 
