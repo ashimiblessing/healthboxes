@@ -84,9 +84,9 @@ export default class requestVisit extends Component {
   }
 
   getdata() {
-    fetch(
-      "https://healthboxes.com/healthboxes_apis/recordlisting.php"
-    ).then(function(response) {
+    fetch("http://app.healthboxes.com/recordlisting.php").then(function(
+      response
+    ) {
       var recieved = JSON.parse(response._bodyText);
     });
 
@@ -116,13 +116,13 @@ export default class requestVisit extends Component {
   bookHandler() {
     const { navigate } = this.props.navigation;
 
-    if (this.state.name != "") {
+    if (this.state.name != "hhhk") {
       this.setState({ messages: "", loading: true });
 
       const { phone, email, datetime, name, address } = this.state;
 
       furl =
-        "https://healthboxes.com/healthboxes_apis/homevisit.php?name=" +
+        "http://app.healthboxes.com/homevisit.php?name=" +
         name +
         "&email=" +
         email +
@@ -182,7 +182,8 @@ export default class requestVisit extends Component {
 
       var email = await AsyncStorage.getItem("email");
       var phone = await AsyncStorage.getItem("phone");
-      this.setState({ umail: email, uphone: phone });
+      var name = await AsyncStorage.getItem("displayName");
+      this.setState({ umail: email, uphone: phone, uname: name });
     } catch (error) {
       // Error saving data
       //alert(error);
@@ -216,13 +217,14 @@ export default class requestVisit extends Component {
           <Grid style={styles.viewcontain}>
             <Row style={styles.contenti}>
               <Col>
-                <Text style={textisize(20)}>Want A Visit?</Text>
+                <Text style={textisize(20)}>Need A Visit?</Text>
                 <Form>
                   <Item stackedLabel>
                     <Label>Name</Label>
                     <Input
                       style={styles.nput}
                       onChangeText={text => this.setState({ name: "" + text })}
+                      value={this.state.uname}
                     />
                   </Item>
                   <Item stackedLabel>

@@ -104,7 +104,7 @@ export default class chargeCustomer extends Component {
           // We have data!!
 
           var furl =
-            "https://healthboxes.com/healthboxes_apis/chargereturncustomer.php?email=" +
+            "http://app.healthboxes.com/chargereturncustomer.php?email=" +
             email +
             "&amount=" +
             amount +
@@ -159,7 +159,7 @@ export default class chargeCustomer extends Component {
           // We have data!!
 
           var furl =
-            "https://healthboxes.com/healthboxes_apis/chargereturncustomer.php?email=" +
+            "http://app.healthboxes.com/chargereturncustomer.php?email=" +
             email +
             "&amount=" +
             amount +
@@ -196,7 +196,7 @@ export default class chargeCustomer extends Component {
               this.setState({ loading: false });
               alert(JSON.stringify(data));
               alert(
-                "We could not receive your payment. Please try re-confirmimg your card details and attempt the call again"
+                "We could not receive your payment. Please try re-confirmimg your card details and try again"
               );
               navigate("addCard");
             }

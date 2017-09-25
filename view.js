@@ -116,7 +116,7 @@ export default class Viewer extends Component {
           name: response.fileName
         });
 
-        fetch("https://healthboxes.com/healthboxes_apis/upload2.php", {
+        fetch("http://app.healthboxes.com/upload2.php", {
           method: "post",
 
           body: formdata

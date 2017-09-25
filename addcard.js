@@ -80,33 +80,7 @@ export default class addCard extends Component {
     super(props);
   }
 
-  componentDidMount() {
-    /*
-const { navigate } = this.props.navigation;
-
-const { params } = this.props.navigation.state;
-//const vvn = params.cardNumber;
-
-    if (
-      typeof params !== "undefined" &&
-      typeof params.cardNumber !== "undefined"
-    ) {
-      this.setState({
-        cardNumber: params.cardNumber + "",
-        expiryMonth: params.expiryMonth + "",
-        expiryYear: params.expiryYear + "",
-        cvc: params.cvc + "",
-        valid: true,
-        cardmsg: ""
-      });
-
-
-
-    }
-
-
-    */
-  }
+  componentDidMount() {}
 
   _cardOnChange(form) {
     //  const { navigate } = this.props.navigation;
@@ -165,7 +139,7 @@ const { params } = this.props.navigation.state;
       expiryYear: this.state.expiryYear,
       cvc: this.state.cvc,
       email: emailvalue,
-      amountInKobo: 200000
+      amountInKobo: 2000
     })
       .then(response => {
         console.log(response.reference);
@@ -174,7 +148,7 @@ const { params } = this.props.navigation.state;
         // card charged successfully, get reference here
 
         var furl =
-          "https://healthboxes.com/healthboxes_apis/grabauthcode.php?tranxref=" +
+          "http://app.healthboxes.com/grabauthcode.php?tranxref=" +
           response.reference;
 
         fetch(furl).then(response => response.json()).then(data => {

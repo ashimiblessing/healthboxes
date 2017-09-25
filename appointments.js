@@ -92,7 +92,7 @@ export default class Appointments extends Component {
   }
 
   getdata() {
-    fetch("https://healthboxes.com/healthboxes_apis/recordlisting.php").then(function(
+    fetch("http://app.healthboxes.com/recordlisting.php").then(function(
       response
     ) {
       var recieved = JSON.parse(response._bodyText);
@@ -120,7 +120,7 @@ export default class Appointments extends Component {
       const { phone, email, datetime, name, notes } = this.state;
 
       fetch(
-        "https://healthboxes.com/healthboxes_apis/bookappointment.php?name=" +
+        "http://app.healthboxes.com/bookappointment.php?name=" +
           name +
           "&email=" +
           email +
@@ -170,8 +170,12 @@ export default class Appointments extends Component {
     );
   }
 
-  componentWillMount() {
+  async componentWillMount() {
     const { navigate } = this.props.navigation;
+    var email = await AsyncStorage.getItem("email");
+    var phone = await AsyncStorage.getItem("phone");
+    var name = await AsyncStorage.getItem("displayName");
+    this.setState({ umail: email, uphone: phone, uname: name });
   }
 
   async componentDidMount() {}
@@ -212,6 +216,7 @@ export default class Appointments extends Component {
                         style={styles.nput}
                         onChangeText={text =>
                           this.setState({ name: "" + text })}
+                        value={this.state.uname}
                       />
                     </Item>
                     <Item stackedLabel>

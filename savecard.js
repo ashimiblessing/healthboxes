@@ -76,7 +76,7 @@ export default class addCard extends Component {
   }
 
   getdata() {
-    fetch("https://healthboxes.com/healthboxes_apis/recordlisting.php").then(function(
+    fetch("http://app.healthboxes.com/recordlisting.php").then(function(
       response
     ) {
       var recieved = JSON.parse(response._bodyText);

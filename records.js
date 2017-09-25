@@ -61,7 +61,7 @@ export default class Record extends Component {
   }
 
   getdata() {
-    fetch("https://healthboxes.com/healthboxes_apis/recordlisting.php").then(function(
+    fetch("http://app.healthboxes.com/recordlisting.php").then(function(
       response
     ) {
       var recieved = JSON.parse(response._bodyText);
@@ -78,7 +78,7 @@ export default class Record extends Component {
     });
     const { navigate } = this.props.navigation;
 
-    fetch("https://healthboxes.com/healthboxes_apis/recordlisting.php")
+    fetch("http://app.healthboxes.com/recordlisting.php")
       .then(function(response) {
         var recieved = JSON.parse(response._bodyText);
 
