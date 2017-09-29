@@ -302,7 +302,9 @@ export default class chargeCustomer extends Component {
 
           <Right />
         </Header>
-        <Content>
+        <Content
+  keyboardShouldPersistTaps="always"
+  keyboardDismissMode="on-drag">
           {this.renderButtonOrSpinner()}
         </Content>
 

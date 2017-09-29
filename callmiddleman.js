@@ -202,7 +202,9 @@ export default class callMiddleMan extends Component {
 
           <Right />
         </Header>
-        <Content>
+        <Content
+  keyboardShouldPersistTaps="always"
+  keyboardDismissMode="on-drag">
           <View>
             {this.renderModalOrSpinner()}
           </View>

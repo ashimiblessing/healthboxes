@@ -31,7 +31,9 @@ export class SideBar extends Component {
   render() {
     return (
       <Container>
-        <Content padder>
+        <Content
+  keyboardShouldPersistTaps="always"
+  keyboardDismissMode="on-drag" padder>
           <View style={styles.sidebarcontain}>
             <Button transparent onPress={() => whereto("Home")}>
               <Icon name="home" style={styles.ico} />
@@ -67,7 +69,7 @@ var styles = StyleSheet.create({
   sidebarcontain: {
     width: width * 0.75,
     backgroundColor: "#494949",
-    marginTop: 50
+    marginTop: 7
   },
   ttxt: {
     color: "white",

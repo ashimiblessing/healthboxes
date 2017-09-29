@@ -42,5 +42,32 @@ module.exports = {
     height: 0,
     width: 0,
     shadowOpacity: 0
+  },
+  smallheight: {
+    height: 50,
+    padding: 10
+  },
+  ico2: {
+    color: "#f26c4d",
+    fontSize: 27
+  },
+  newtxt: {
+    color: "#f26c4d",
+    fontSize: 15,
+    fontWeight: "500"
+  },
+  hr: {
+    borderBottomWidth: 2,
+    borderBottomColor: "#efefef",
+    width: width - 15
+  },
+  ticon: {
+    width: 40,
+    height: 40,
+    paddingTop: 4
+  },
+
+  formsize: {
+    fontSize: 15
   }
 };

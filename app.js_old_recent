@@ -58,6 +58,17 @@ import { StackNavigator, DrawerNavigator } from "react-navigation";
 import { NavigationActions } from "react-navigation";
 import { CheckBox } from "react-native-elements";
 
+import HomeScreen from "./homescreen";
+import User from "./user";
+import Viewer from "./view";
+import Record from "./records";
+import showRecord from "./showrecords";
+import Appointments from "./appointments";
+import addCard from "./addcard";
+import chargeCustomer from "./chargecustomer";
+import callMiddleMan from "./callmiddleman";
+import requestVisit from "./requestvisit";
+import scanCard from "./scanCard";
 import SideBar from "./sidebar";
 import xstyles from "./externalstyle";
 
@@ -123,11 +134,7 @@ export default class Welcome extends Component {
 
       if (value !== null) {
         //alert("I chose to stay logged in");
-        const resetAction = NavigationActions.reset({
-          index: 0,
-          actions: [NavigationActions.navigate({ routeName: "Home" })]
-        });
-        this.props.navigation.dispatch(resetAction);
+        navigate("Home");
       } else {
         //alert("I chose not");
         AsyncStorage.removeItem("logincookie");
@@ -241,38 +248,40 @@ export default class Welcome extends Component {
       );
     } else if (this.state.signup) {
       return (
-        <View>
+        <View style={styles.adjust}>
           <Button
             style={styles.button}
+            full
             rounded
             onPress={() => this.signupHandler()}
           >
-            <Text style={styles.buttontxt}>SUBMIT</Text>
+            <Text style={styles.buttontxt}>SIGN ME UP</Text>
           </Button>
 
           <TouchableOpacity
             onPress={() => navigate("Welcome")}
             style={{ marginTop: 7 }}
           >
-            <Text style={textisize(16, "red")}>Login</Text>
+            <Text style={textisize(18, "red")}>Login</Text>
           </TouchableOpacity>
         </View>
       );
     } else {
       return (
-        <View>
+        <View style={styles.adjust}>
           <Button
             style={styles.button}
+            full
             rounded
             onPress={() => this.loginHandler()}
           >
             <Text style={styles.buttontxt}>SIGN IN</Text>
           </Button>
 
-          <Text style={textisize(15)}>Not already a member? </Text>
+          <Text style={textisize(17)}>Not already a member? </Text>
 
           <TouchableOpacity onPress={() => this.showSignup()}>
-            <Text style={textisize(15, "red")}>Register</Text>
+            <Text style={textisize(18, "red")}>Signup Now</Text>
           </TouchableOpacity>
         </View>
       );
@@ -307,10 +316,15 @@ export default class Welcome extends Component {
       if (this.state.signup == "signup") {
         return (
           <Container style={{ backgroundColor: "white" }}>
+            <Header style={styles.headr} androidStatusBarColor="#394753">
+              <StatusBar barStyle="light-content" />
+              <Left>
+                <Text style={styles.headtxt}>WELCOME</Text>
+              </Left>
+            </Header>
             <Content
-              keyboardShouldPersistTaps="always"
-              keyboardDismissMode="on-drag"
-            >
+  keyboardShouldPersistTaps="always"
+  keyboardDismissMode="on-drag">
               <Grid style={styles.viewcontain}>
                 <Row style={styles.top}>
                   <Image
@@ -320,29 +334,24 @@ export default class Welcome extends Component {
                 </Row>
                 <Row style={styles.login}>
                   <Col>
-                    <Text style={textisize(16, null, "600")}>
-                      Create An Account
+                    <Text style={textisize(20, null, "600")}>
+                      Get An Account
                     </Text>
 
                     <Form>
                       <Item>
                         <Icon active name="person" style={styles.lico} />
                         <Input
-                          autoFocus={true}
-                          autoCorrect={false}
-                          style={xstyles.formsize}
                           placeholder="Username"
                           value={this.state.displayName}
                           onChangeText={displayName =>
                             this.setState({ displayName })}
-                          returnKeyType="done"
                         />
                       </Item>
 
                       <Item>
                         <Icon active name="phone" style={styles.lico} />
                         <Input
-                          style={xstyles.formsize}
                           placeholder="Phone Number"
                           value={this.state.phoneNumber}
                           onChangeText={phoneNumber =>
@@ -353,7 +362,6 @@ export default class Welcome extends Component {
                       <Item>
                         <Icon active name="email" style={styles.lico} />
                         <Input
-                          style={xstyles.formsize}
                           placeholder="Email "
                           value={this.state.email}
                           onChangeText={email => this.setState({ email })}
@@ -363,7 +371,6 @@ export default class Welcome extends Component {
                       <Item last>
                         <Icon active name="lock" style={styles.lico} />
                         <Input
-                          style={xstyles.formsize}
                           placeholder="Choose a password"
                           secureTextEntry={true}
                           value={this.state.password}
@@ -385,11 +392,16 @@ export default class Welcome extends Component {
       } else {
         const { navigate } = this.props.navigation;
         return (
-          <Container style={{ backgroundColor: "#ffffff" }}>
+          <Container style={{ backgroundColor: "#efefef" }}>
+            <Header style={styles.headr} androidStatusBarColor="#394753">
+              <StatusBar barStyle="light-content" />
+              <Left>
+                <Text style={styles.headtxt}>WELCOME</Text>
+              </Left>
+            </Header>
             <Content
-              keyboardShouldPersistTaps="always"
-              keyboardDismissMode="on-drag"
-            >
+  keyboardShouldPersistTaps="always"
+  keyboardDismissMode="on-drag">
               <Grid style={styles.viewcontain}>
                 <Row style={styles.top}>
                   <Image
@@ -406,13 +418,11 @@ export default class Welcome extends Component {
                           placeholder="Email"
                           value={this.state.email}
                           onChangeText={email => this.setState({ email })}
-                          style={xstyles.formsize}
                         />
                       </Item>
                       <Item last>
                         <Icon active name="lock" style={styles.lico} />
                         <Input
-                          style={xstyles.formsize}
                           placeholder="Password"
                           secureTextEntry={true}
                           value={this.state.password}
@@ -430,16 +440,7 @@ export default class Welcome extends Component {
                           checkedColor="red"
                           checked={this.state.isChecked}
                           onIconPress={() => this.pressIcon()}
-                          style={{
-                            backgroundColor: "#efefef",
-                            marginTop: 15
-                          }}
-                          textStyle={{
-                            fontSize: 13,
-                            backgroundColor: "#ffffff"
-                          }}
-                          containerStyle={{ backgroundColor: "#ffffff" }}
-                          style={{ backgroundColor: "white", marginTop: 25 }}
+                          style={{ backgroundColor: "#efefef", marginTop: 15 }}
                         />
                       </View>
 
@@ -490,10 +491,7 @@ var styles = StyleSheet.create({
 
   button: {
     backgroundColor: "#f26c4d",
-    marginTop: 1,
-    alignSelf: "center",
-    marginBottom: 15,
-    height: 34
+    marginTop: 20
   },
   buttontxt: {
     color: "white",
@@ -526,3 +524,20 @@ var styles = StyleSheet.create({
     marginBottom: 40
   }
 });
+
+const HealthBoxes = StackNavigator({
+  Welcome: { screen: Welcome },
+  Home: { screen: HomeScreen },
+  User: { screen: User },
+  Viewer: { screen: Viewer },
+  Record: { screen: Record },
+  Showrecord: { screen: showRecord },
+  Appoint: { screen: Appointments },
+  addCard: { screen: addCard },
+  chargeCustomer: { screen: chargeCustomer },
+  callMiddleMan: { screen: callMiddleMan },
+  requestVisit: { screen: requestVisit },
+  scanCard: { screen: scanCard }
+});
+
+AppRegistry.registerComponent("HealthBoxes", () => HealthBoxes);

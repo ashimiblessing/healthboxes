@@ -86,6 +86,37 @@ textisize = function(size, color = "#191919", weight = "500") {
   };
 };
 
+const SideBars = props =>
+  <Container>
+    <Content
+  keyboardShouldPersistTaps="always"
+  keyboardDismissMode="on-drag" padder>
+      <View style={styles.sidebarcontain}>
+        <Button transparent onPress={() => navigate("Home")}>
+          <Icon name="home" style={styles.ico} />
+          <Text style={styles.ttxt}>Home</Text>
+        </Button>
+        <Button transparent onPress={() => navigation.navigate("User")}>
+          <Icon name="account-circle" style={styles.ico} />
+          <Text style={styles.ttxt}>Profile</Text>
+        </Button>
+        <Button transparent onPress={() => this.signOut()}>
+          <Icon name="highlight-off" style={styles.ico} />
+          <Text style={styles.ttxt}>Logout</Text>
+        </Button>
+        <Button transparent onPress={() => alert("HealthBoxes")}>
+          <Icon name="info" style={styles.ico} />
+          <Text style={styles.ttxt}>About</Text>
+        </Button>
+
+        <Button transparent onPress={() => closeDrawer()}>
+          <Icon name="info" style={styles.ico} />
+          <Text style={styles.ttxt}>Close</Text>
+        </Button>
+      </View>
+    </Content>
+  </Container>;
+
 export default class HomeScreen extends Component {
   static navigationOptions = {
     title: "HealthBoxes",
@@ -257,9 +288,8 @@ export default class HomeScreen extends Component {
           </Modal>
 
           <Content
-            keyboardShouldPersistTaps="always"
-            keyboardDismissMode="on-drag"
-          >
+  keyboardShouldPersistTaps="always"
+  keyboardDismissMode="on-drag">
             <Grid>
               <Row style={styles.topsmall}>
                 <Col>
@@ -288,67 +318,26 @@ export default class HomeScreen extends Component {
               <Row size={1} style={styles.juxt}>
                 <Col style={styles.box}>
                   <TouchableOpacity
+                    style={boxingStyle("#25363e")}
                     onPress={() => this.shotiSanwo("call")}
-                    style={styles.tciti}
                   >
-                    <Image
-                      source={require("./imgsfresh/medal-1.png")}
-                      style={xstyles.ticon}
-                    />
+                    <Icon active name="call" style={styles.headicon} />
                   </TouchableOpacity>
                   <TouchableOpacity onPress={() => this.shotiSanwo("call")}>
-                    <Text style={styles.ctxt}>MY HEALTH TARGETS</Text>
+                    <Text style={styles.ctxt}>Call a Doctor</Text>
                   </TouchableOpacity>
                 </Col>
                 <Col style={styles.box}>
                   <TouchableOpacity
+                    style={boxingStyle("#8b7860")}
                     onPress={() => this.shotiSanwo("appointment")}
-                    style={styles.tciti}
                   >
-                    <Image
-                      source={require("./imgsfresh/amh.png")}
-                      style={xstyles.ticon}
-                    />
+                    <Icon active name="people" style={styles.headicon} />
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={() => this.shotiSanwo("appointment")}
                   >
-                    <Text style={styles.ctxt}>ASSESS MY HEALTH</Text>
-                  </TouchableOpacity>
-                </Col>
-
-                <Col style={styles.box}>
-                  <TouchableOpacity
-                    onPress={() => this.shotiSanwo("call")}
-                    style={styles.tciti}
-                  >
-                    <Image
-                      source={require("./imgsfresh/people.png")}
-                      style={xstyles.ticon}
-                    />
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={() => this.shotiSanwo("call")}>
-                    <Text style={styles.ctxt}>SPECIAISTS APPOINTMENT</Text>
-                  </TouchableOpacity>
-                </Col>
-
-                <Col style={styles.box}>
-                  <TouchableOpacity
-                    onPress={() => this.shotiSanwo("homevisit")}
-                    style={styles.tciti}
-                  >
-                    <Image
-                      source={require("./imgsfresh/syringe.png")}
-                      style={xstyles.ticon}
-                    />
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => this.shotiSanwo("homevisit")}
-                  >
-                    <Text style={styles.ctxt}>
-                      {` REQUEST A
-HOME VISIT `}
-                    </Text>
+                    <Text style={styles.ctxt}>Appointments</Text>
                   </TouchableOpacity>
                 </Col>
               </Row>
@@ -356,64 +345,27 @@ HOME VISIT `}
               <Row size={1} style={styles.juxt}>
                 <Col style={styles.box}>
                   <TouchableOpacity
+                    style={boxingStyle("#607d8b")}
                     onPress={() => this._showModal()}
-                    style={styles.tciti}
                   >
-                    <Image
-                      source={require("./imgsfresh/medical.png")}
-                      style={xstyles.ticon}
-                    />
+                    <Icon active name="edit" style={styles.headicon} />
                   </TouchableOpacity>
                   <TouchableOpacity onPress={() => this._showModal()}>
-                    <Text style={styles.ctxt}>PHARMACY & OTC REFILLS</Text>
+                    <Text style={styles.ctxt}>Your Records</Text>
                   </TouchableOpacity>
                 </Col>
 
                 <Col style={styles.box}>
                   <TouchableOpacity
-                    onPress={() => this.shotiSanwo("call")}
-                    style={styles.tciti}
+                    style={boxingStyle("#3e301f")}
+                    onPress={() => this.shotiSanwo("homevisit")}
                   >
-                    <Image
-                      source={require("./imgsfresh/speech-bubble.png")}
-                      style={xstyles.ticon}
-                    />
+                    <Icon active name="accessibility" style={styles.headicon} />
                   </TouchableOpacity>
-                  <TouchableOpacity onPress={() => this.shotiSanwo("call")}>
-                    <Text style={styles.ctxt}>VIRTUAL CONSULTATION</Text>
-                  </TouchableOpacity>
-                </Col>
-
-                <Col style={styles.box}>
                   <TouchableOpacity
-                    onPress={() => this.shotiSanwo("call")}
-                    style={styles.tciti}
+                    onPress={() => this.shotiSanwo("homevisit")}
                   >
-                    <Image
-                      source={require("./imgsfresh/palcare.png")}
-                      style={xstyles.ticon}
-                    />
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={() => this.shotiSanwo("call")}>
-                    <Text style={styles.ctxt}>
-                      {`PALLIATIVE
- CARE`}
-                    </Text>
-                  </TouchableOpacity>
-                </Col>
-
-                <Col style={styles.box}>
-                  <TouchableOpacity
-                    onPress={() => this.shotiSanwo("call")}
-                    style={styles.tciti}
-                  >
-                    <Image
-                      source={require("./imgsfresh/briefcase.png")}
-                      style={xstyles.ticon}
-                    />
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={() => this.shotiSanwo("call")}>
-                    <Text style={styles.ctxt}>REVIEW MY RECORDS</Text>
+                    <Text style={styles.ctxt}>Request Home Visit </Text>
                   </TouchableOpacity>
                 </Col>
               </Row>
@@ -470,19 +422,18 @@ var styles = StyleSheet.create({
   },
   ctxt: {
     color: "#191919",
-    fontWeight: "500",
+    fontWeight: "400",
     alignSelf: "center",
     textAlign: "center",
-    fontSize: 10,
-    marginTop: 10
+    fontSize: 14
   },
 
   box: {
     alignItems: "center",
     justifyContent: "center",
 
-    marginTop: 1,
-    marginBottom: 10
+    marginTop: width * 0.015,
+    marginBottom: 40
   },
   headicon: {
     fontSize: 30,
@@ -499,7 +450,7 @@ var styles = StyleSheet.create({
 
     alignItems: "center",
     alignSelf: "center",
-    marginHorizontal: 10
+    marginHorizontal: width * 0.1
   },
 
   foot: {
@@ -558,9 +509,5 @@ var styles = StyleSheet.create({
 
   tinklerow: {
     marginHorizontal: width * 0.4
-  },
-
-  tciti: {
-    paddingTop: 20
   }
 });

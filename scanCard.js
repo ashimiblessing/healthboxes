@@ -253,7 +253,9 @@ export default class scanCard extends Component {
 
           <Right />
         </Header>
-        <Content>
+        <Content
+  keyboardShouldPersistTaps="always"
+  keyboardDismissMode="on-drag">
           <View style={{ justifyContent: "center" }}>
             <ActivityIndicator
               animating={this.state.loading}

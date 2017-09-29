@@ -154,7 +154,9 @@ export default class showRecord extends Component {
 
             <Right />
           </Header>
-          <Content>
+          <Content
+  keyboardShouldPersistTaps="always"
+  keyboardDismissMode="on-drag">
             <Grid>
               <Row>
                 <Col style={{ marginLeft: 10 }}>

@@ -1,3 +1,3 @@
-import App from "./app";
+import splashScreeni from "./splashscreen";
 
-export default App;
+export default splashScreeni;

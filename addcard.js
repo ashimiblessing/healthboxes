@@ -257,7 +257,9 @@ export default class addCard extends Component {
             <Text style={textisize(20, "white", "500")}>Add a Card</Text>
           </Body>
         </Header>
-        <Content>
+        <Content
+  keyboardShouldPersistTaps="always"
+  keyboardDismissMode="on-drag">
           <Text style={styles.carddetails}>Enter Your Card Details</Text>
 
           <CreditCardInput

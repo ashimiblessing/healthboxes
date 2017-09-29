@@ -190,7 +190,9 @@ export default class HomeScreen extends Component {
             <Text style={textisize(20, "white", "500")}>Dashboard</Text>
           </Body>
         </Header>
-        <Content>
+        <Content
+  keyboardShouldPersistTaps="always"
+  keyboardDismissMode="on-drag">
           <Grid>
             <Row style={styles.topsmall}>
               <Row>

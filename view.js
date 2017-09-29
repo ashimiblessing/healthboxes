@@ -168,7 +168,9 @@ export default class Viewer extends Component {
           <Right />
         </Header>
 
-        <Content>
+        <Content
+  keyboardShouldPersistTaps="always"
+  keyboardDismissMode="on-drag">
           <ActivityIndicator
             animating={this.state.animating}
             style={styles.centering}

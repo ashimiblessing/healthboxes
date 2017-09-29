@@ -114,14 +114,14 @@ export default class Appointments extends Component {
   };
 
   bookHandler() {
-    if (this.state.name != "") {
+    if (this.state.uname != "") {
       this.setState({ messages: "", loading: true });
 
-      const { phone, email, datetime, name, notes } = this.state;
+      const { phone, email, datetime, name, notes, uname } = this.state;
 
       fetch(
         "http://app.healthboxes.com/bookappointment.php?name=" +
-          name +
+          uname +
           "&email=" +
           email +
           "&phone=" +
@@ -204,7 +204,9 @@ export default class Appointments extends Component {
 
             <Right />
           </Header>
-          <Content>
+          <Content
+  keyboardShouldPersistTaps="always"
+  keyboardDismissMode="on-drag">
             <Grid style={styles.viewcontain}>
               <Row style={styles.contenti}>
                 <Col>
@@ -214,9 +216,9 @@ export default class Appointments extends Component {
                       <Label>Name</Label>
                       <Input
                         style={styles.nput}
-                        onChangeText={text =>
-                          this.setState({ name: "" + text })}
+                        onChange={text => this.setState({ name: "" + text })}
                         value={this.state.uname}
+                        defaultValue={this.state.uname}
                       />
                     </Item>
                     <Item stackedLabel>

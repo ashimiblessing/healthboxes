@@ -75,6 +75,16 @@ export default class User extends Component {
 
   loginHandler() {
     const { navigate } = this.props.navigation;
+    const { name, dob, country, medicalhistory, notes } = this.state;
+
+    try {
+      AsyncStorage.setItem("displayName", "Blessing");
+      AsyncStorage.setItem("dob", "" + dob);
+      AsyncStorage.setItem("country", "" + country);
+      AsyncStorage.setItem("medicalhistory", "" + medicalhistory);
+      AsyncStorage.setItem("notes", "" + notes);
+    } catch (e) {}
+
     alert("Profile saved");
     navigate("Home");
   }
@@ -112,7 +122,9 @@ export default class User extends Component {
 
           <Right />
         </Header>
-        <Content>
+        <Content
+  keyboardShouldPersistTaps="always"
+  keyboardDismissMode="on-drag">
           <Grid style={styles.viewcontain2}>
             <Row style={styles.contenti2}>
               <Col>
@@ -120,35 +132,45 @@ export default class User extends Component {
                 <Form>
                   <Item stackedLabel>
                     <Label>Name</Label>
-                    <Input style={styles.nput} />
+
+                    <Input
+                      style={styles.nput}
+                      onChange={text => this.setState({ name: "" + text })}
+                    />
                   </Item>
 
-                  <TouchableOpacity onPress={this._showDateTimePicker}>
-                    <Item stackedLabel>
-                      <Label>DOB</Label>
+                  <Item stackedLabel>
+                    <Label>DOB</Label>
 
-                      <Input />
+                    <Input
+                      style={styles.nput}
+                      onChange={text => this.setState({ dob: "" + text })}
+                    />
+                  </Item>
 
-                      <DateTimePicker
-                        isVisible={this.state.isDateTimePickerVisible}
-                        onConfirm={this._handleDatePicked}
-                        onCancel={this._hideDateTimePicker}
-                      />
-                    </Item>
-                  </TouchableOpacity>
                   <Item stackedLabel>
                     <Label>State/Country</Label>
-                    <Input style={styles.nput} />
+                    <Input
+                      style={styles.nput}
+                      onChange={text => this.setState({ country: "" + text })}
+                    />
                   </Item>
 
                   <Item stackedLabel>
                     <Label>Medical History</Label>
-                    <Input style={styles.nput} />
+                    <Input
+                      style={styles.nput}
+                      onChange={text =>
+                        this.setState({ medicalhistory: "" + text })}
+                    />
                   </Item>
 
                   <Item stackedLabel last>
                     <Label>Notes</Label>
-                    <Input style={styles.nput} />
+                    <Input
+                      style={styles.nput}
+                      onChange={text => this.setState({ notes: "" + text })}
+                    />
                   </Item>
                 </Form>
 

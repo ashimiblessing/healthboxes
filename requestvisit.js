@@ -213,7 +213,9 @@ export default class requestVisit extends Component {
           </Body>
           <Right />
         </Header>
-        <Content>
+        <Content
+  keyboardShouldPersistTaps="always"
+  keyboardDismissMode="on-drag">
           <Grid style={styles.viewcontain}>
             <Row style={styles.contenti}>
               <Col>

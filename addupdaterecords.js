@@ -68,7 +68,9 @@ export default class showRecord extends Component {
     return (
       <Container style={{ backgroundColor: "white", justifyContent: "center" }}>
         <Header />
-        <Content>
+        <Content
+  keyboardShouldPersistTaps="always"
+  keyboardDismissMode="on-drag">
           <Grid>
             <Row>
               <Col style={{ marginLeft: 10 }}>
