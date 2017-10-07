@@ -87,7 +87,7 @@ export default class Welcome extends Component {
   state = {
     email: "",
     password: "",
-    displayName: "",
+    username: "",
     phoneNumber: "",
     error: "",
     loading: false,
@@ -165,13 +165,72 @@ export default class Welcome extends Component {
       (phoneNumber !== "") & (displayName !== "")
     ) {
       this.setState({ error: "", loading: true });
-      const { email, password, displayName, phoneNumber } = this.state;
+      const { email, password, username, phoneNumber } = this.state;
 
-      AsyncStorage.setItem("displayName", displayName);
-      AsyncStorage.setItem("globalID", "BXI127699");
-      setTimeout(function() {
-        navigate("Home");
-      }, 3600);
+      //AsyncStorage.setItem("displayName", displayName);
+      //AsyncStorage.setItem("globalID", "BXI127699");
+
+      this.setState({ error: "", loading: true });
+
+      var details = {
+        UserName: username,
+        Password: password,
+        Email: email,
+        PhoneNumber: phoneNumber
+      };
+
+      var formBody = [];
+      for (var property in details) {
+        var encodedKey = encodeURIComponent(property);
+        var encodedValue = encodeURIComponent(details[property]);
+        formBody.push(encodedKey + "=" + encodedValue);
+      }
+      formBody = formBody.join("&");
+
+      fetch("http://hbx.stripestech.com" + "/api/Account/CreateUser", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: formBody
+      })
+        .then(response => response.json())
+        .then(async data => {
+          if (data.reg_response == "successful") {
+            navigate("Welcome");
+            alert("Registeration successful, please login");
+
+            AsyncStorage.setItem("phoneNumber", "" + phoneNumber);
+
+            this.setState({ error: "", loading: false });
+          } else {
+            if (data.isEMailExist) {
+              this.setState({
+                error: "Email address already in use",
+                loading: false
+              });
+            } else if (data.isPhoneExist) {
+              this.setState({
+                error: "Phone number already in use",
+                loading: false
+              });
+            } else if (data.isUserNameExist) {
+              this.setState({
+                error: "Sorry, username already in use",
+                loading: false
+              });
+            } else {
+              this.setState({
+                error: "Sorry, there was an error, please check your details",
+                loading: false
+              });
+            }
+          }
+        })
+        .catch(error => {
+          this.setState({ error: error.message, loading: false });
+        });
     } else {
       this.setState({
         error: "One or more items are empty. Please fill everything",
@@ -185,45 +244,75 @@ export default class Welcome extends Component {
 
     const { email, password } = this.state;
 
-    var atpos = email.indexOf("@");
-    var dotpos = email.lastIndexOf(".");
+    //var atpos = email.indexOf("@");
+    //  var dotpos = email.lastIndexOf(".");
 
     //end
-    if (this.state.email == "" || this.state.password == "") {
+    if (this.state.username == "" || this.state.password == "") {
       this.setState({
         error: "Please fill both fields",
         loading: false
       });
-    } else if (atpos < 1 || dotpos < atpos + 2 || dotpos + 2 >= email.length) {
-      this.setState({
-        error: "Please enter a valid email address",
-        loading: false
-      });
     } else {
-      try {
-        vv = await AsyncStorage.getItem("keeplogin");
-        if (vv !== null) {
-          AsyncStorage.setItem("logincookie", "I like to save it");
-        }
-      } catch (e) {
-        //silence is golden
-      }
-
-      navigate("Home");
-
+      const { username, password } = this.state;
       this.setState({ error: "", loading: true });
-      const { email, password } = this.state;
 
-      try {
-        const valu = await AsyncStorage.getItem("logincookie");
-        if (valu !== null) {
-          this.setState({ error: "", loading: false });
+      var details = {
+        UserName: username,
+        Password: password,
+        grant_type: "password"
+      };
 
-          navigate("Home");
-        } else {
-          this.setState({ error: "", loading: false });
-        }
-      } catch (error) {}
+      var formBody = [];
+      for (var property in details) {
+        var encodedKey = encodeURIComponent(property);
+        var encodedValue = encodeURIComponent(details[property]);
+        formBody.push(encodedKey + "=" + encodedValue);
+      }
+      formBody = formBody.join("&");
+
+      fetch("http://hbx.stripestech.com" + "/token", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: formBody
+      })
+        .then(response => response.json())
+        .then(async data => {
+          if (typeof data.access_token !== "undefined") {
+            try {
+              vv = await AsyncStorage.getItem("keeplogin");
+
+              AsyncStorage.setItem("username", "" + username);
+              AsyncStorage.setItem("email", "" + data.email);
+              AsyncStorage.setItem("token", "" + data.access_token);
+              AsyncStorage.setItem("userId", "" + data.userId);
+              AsyncStorage.setItem("globalId", "" + data.globalId);
+
+              if (vv !== null) {
+                AsyncStorage.setItem("logincookie", "" + data.access_token);
+              }
+
+              this.setState({ error: "", loading: false });
+            } catch (e) {
+              //silence is golden
+              this.setState({ error: e.message, loading: false });
+            }
+
+            navigate("Home");
+          } else {
+            this.setState({ error: data.error_description, loading: false });
+          }
+        })
+        .catch(error => {
+          //this.setState({ error: error.message, loading: false });
+          this.setState({
+            error: "There was a problem logging in..",
+            loading: false
+          });
+        });
     }
   }
 
@@ -242,11 +331,7 @@ export default class Welcome extends Component {
     } else if (this.state.signup) {
       return (
         <View>
-          <Button
-            style={styles.button}
-            rounded
-            onPress={() => this.signupHandler()}
-          >
+          <Button style={styles.button} onPress={() => this.signupHandler()}>
             <Text style={styles.buttontxt}>SUBMIT</Text>
           </Button>
 
@@ -254,25 +339,21 @@ export default class Welcome extends Component {
             onPress={() => navigate("Welcome")}
             style={{ marginTop: 7 }}
           >
-            <Text style={textisize(16, "red")}>Login</Text>
+            <Text style={textisize(14, "red")}>Login</Text>
           </TouchableOpacity>
         </View>
       );
     } else {
       return (
         <View>
-          <Button
-            style={styles.button}
-            rounded
-            onPress={() => this.loginHandler()}
-          >
+          <Button style={styles.button} onPress={() => this.loginHandler()}>
             <Text style={styles.buttontxt}>SIGN IN</Text>
           </Button>
 
-          <Text style={textisize(15)}>Not already a member? </Text>
+          <Text style={textisize(14)}>Not already a member? </Text>
 
           <TouchableOpacity onPress={() => this.showSignup()}>
-            <Text style={textisize(15, "red")}>Register</Text>
+            <Text style={textisize(14, "red")}>Register</Text>
           </TouchableOpacity>
         </View>
       );
@@ -320,7 +401,7 @@ export default class Welcome extends Component {
                 </Row>
                 <Row style={styles.login}>
                   <Col>
-                    <Text style={textisize(16, null, "600")}>
+                    <Text style={textisize(14, null, "600")}>
                       Create An Account
                     </Text>
 
@@ -333,8 +414,7 @@ export default class Welcome extends Component {
                           style={xstyles.formsize}
                           placeholder="Username"
                           value={this.state.displayName}
-                          onChangeText={displayName =>
-                            this.setState({ displayName })}
+                          onChangeText={username => this.setState({ username })}
                           returnKeyType="done"
                         />
                       </Item>
@@ -344,7 +424,6 @@ export default class Welcome extends Component {
                         <Input
                           style={xstyles.formsize}
                           placeholder="Phone Number"
-                          value={this.state.phoneNumber}
                           onChangeText={phoneNumber =>
                             this.setState({ phoneNumber })}
                         />
@@ -354,8 +433,7 @@ export default class Welcome extends Component {
                         <Icon active name="email" style={styles.lico} />
                         <Input
                           style={xstyles.formsize}
-                          placeholder="Email "
-                          value={this.state.email}
+                          placeholder="Email"
                           onChangeText={email => this.setState({ email })}
                         />
                       </Item>
@@ -366,7 +444,6 @@ export default class Welcome extends Component {
                           style={xstyles.formsize}
                           placeholder="Choose a password"
                           secureTextEntry={true}
-                          value={this.state.password}
                           onChangeText={password => this.setState({ password })}
                         />
                       </Item>
@@ -401,11 +478,11 @@ export default class Welcome extends Component {
                   <Col>
                     <Form>
                       <Item>
-                        <Icon active name="email" style={styles.lico} />
+                        <Icon active name="person" style={styles.lico} />
                         <Input
-                          placeholder="Email"
-                          value={this.state.email}
-                          onChangeText={email => this.setState({ email })}
+                          placeholder="Username"
+                          value={this.state.username}
+                          onChangeText={username => this.setState({ username })}
                           style={xstyles.formsize}
                         />
                       </Item>
@@ -431,11 +508,11 @@ export default class Welcome extends Component {
                           checked={this.state.isChecked}
                           onIconPress={() => this.pressIcon()}
                           style={{
-                            backgroundColor: "#efefef",
+                            backgroundColor: "#ffffff",
                             marginTop: 15
                           }}
                           textStyle={{
-                            fontSize: 13,
+                            fontSize: 11,
                             backgroundColor: "#ffffff"
                           }}
                           containerStyle={{ backgroundColor: "#ffffff" }}
@@ -498,7 +575,8 @@ var styles = StyleSheet.create({
   buttontxt: {
     color: "white",
     alignSelf: "center",
-    fontWeight: "600"
+    fontWeight: "600",
+    fontSize: 13
   },
 
   logo: {

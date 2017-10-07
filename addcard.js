@@ -73,7 +73,8 @@ export default class addCard extends Component {
     cardNumber2: "",
     expiryMonth2: "",
     expiryYear2: "",
-    cvc2: ""
+    cvc2: "",
+    error: ""
   };
 
   constructor(props) {
@@ -106,6 +107,7 @@ export default class addCard extends Component {
   }
 
   async cardHandler() {
+    const { navigate } = this.props.navigation;
     this.setState({ loading: true });
 
     try {
@@ -118,87 +120,120 @@ export default class addCard extends Component {
       // Error retrieving data
     }
 
-    /*  alert(
-      JSON.stringify({
-        cardNumber: this.state.cardNumber,
-        expiryMonth: this.state.expiryMonth,
-        expiryYear: this.state.expiryYear,
-        cvc: this.state.cvc,
-        email: emailvalue,
-        amountInKobo: 150000
-      })
-    );
+    const { params } = this.props.navigation.state;
 
-
-*/
-
-    //alert(this.state.cardNumber);
     RNPaystack.chargeCard({
       cardNumber: this.state.cardNumber,
       expiryMonth: this.state.expiryMonth,
       expiryYear: this.state.expiryYear,
       cvc: this.state.cvc,
       email: emailvalue,
-      amountInKobo: 2000
+      amountInKobo: 1000000
     })
       .then(response => {
         console.log(response.reference);
+        //alert(params.details.token);
 
-        //alert(response.reference);
-        // card charged successfully, get reference here
-
-        var furl =
-          "http://app.healthboxes.com/grabauthcode.php?tranxref=" +
-          response.reference;
-
-        fetch(furl).then(response => response.json()).then(data => {
-          //var recieved = JSON.parse(response._bodyText);
-          //var recieved = JSON.stringify(response);
-
-          /*
-
-
-        fetch(furl).then(response => {
-          //var recieved = JSON.parse(response._bodyText);
-          var recieved = JSON.stringify(response);
-          var status = response.status;
-
-
-*/
-
-          if (data.message != "404") {
-            //alert(status);
-            //there is a problem with how this part was written
-            //it's working now, but not the ideal solution.
-            //we need to check if card was added to database
-            //we'll do it later...solving it now .....
-            //..solved
-            this.setState({ loading: false });
-
-            AsyncStorage.setItem("auth_code", JSON.stringify(data.message));
-
-            alert("Your card was added successfully");
-
-            const { navigate } = this.props.navigation;
-
-            navigate("Home");
-          } else {
-            this.setState({ loading: false });
-
-            //  alert(status);
-            alert("There was a problem saving your card");
+        fetch(
+          "http://hbx.stripestech.com" +
+            "/api/HBXCore/VerifyPayment?reference=" +
+            response.reference,
+          {
+            method: "GET",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/x-www-form-urlencoded",
+              Authorization: "Bearer " + params.details.token
+            }
           }
-          //  const { navigate } = this.props.navigation;
+        )
+          .then(response => response.json())
+          .then(async data => {
+            //alert(JSON.stringify(data));
+            if (
+              typeof data.hbx_result.status !== "undefined" &&
+              data.hbx_result.status
+            ) {
+              try {
+                var detai = {
+                  UserId: params.details.userid,
+                  Name: params.details.name,
+                  Address: params.details.address,
+                  Date: params.details.datetime,
+                  Status: 1
+                };
 
-          //  navigate("Appoint", { appoint: "book" });
+                var formBody = [];
+                for (var property in detai) {
+                  var encodedKey = encodeURIComponent(property);
+                  var encodedValue = encodeURIComponent(detai[property]);
+                  formBody.push(encodedKey + "=" + encodedValue);
+                }
+                formBody = formBody.join("&");
 
-          //  alert(recieved);
-        }); //end of fetch
+                fetch(
+                  "http://hbx.stripestech.com" + "/api/HBXCore/CreateHomeVisit",
+                  {
+                    method: "POST",
+                    headers: {
+                      Accept: "application/json",
+                      "Content-Type": "application/x-www-form-urlencoded",
+                      Authorization: "Bearer " + params.details.token
+                    },
+
+                    body: formBody
+                  }
+                )
+                  .then(response => response.json())
+                  .then(async data => {
+                    //alert(JSON.stringify(data));
+                    if (
+                      typeof data.hbx_response !== "undefined" &&
+                      data.hbx_response
+                    ) {
+                      this.setState({ error: "", loading: false });
+
+                      navigate("Home");
+                      Alert.alert(
+                        "Confirmation",
+                        "Your home visit request has been successfully made"
+                      );
+                    } else {
+                      //alert(JSON.stringify(data));
+                      this.setState({
+                        error: "There was a problem booking your home visit.",
+                        loading: false
+                      });
+                    }
+                  })
+                  .catch(error => {
+                    alert(JSON.stringify(error.message));
+                    this.setState({
+                      error: "Sorry, " + error.message,
+                      loading: false
+                    });
+                  });
+              } catch (e) {
+                //alert(JSON.stringify(e.message));
+                this.setState({ error: e.message, loading: false });
+              }
+
+              //navigate("requestVisit", { details: params.details });
+              //  alert(params.details);
+            } else {
+              alert(
+                "There was an error confirming your payment. Please try again"
+              );
+              navigate("Home");
+            }
+          });
+
+        //the catch below is for paystack chargecard
       })
       .catch(error => {
         this.setState({ loading: false });
         alert(
-          "There was a problem saving your card. Please double check your details; " +
+          "There was a problem adding your card. Please double check your details; " +
             error.message
         );
         console.log(error); // error is a javascript Error object
@@ -226,8 +261,6 @@ export default class addCard extends Component {
     return (
       <View>
         <Button
-          full
-          rounded
           onPress={() => this.cardHandler()}
           style={thestyle.vals}
           disabled={!this.state.valid}
@@ -238,40 +271,58 @@ export default class addCard extends Component {
     );
   }
 
-  async componentDidMount() {
-    const { navigate } = this.props.navigation;
-  }
-
   render() {
     const { navigate } = this.props.navigation;
     const { params } = this.props.navigation.state;
-
+    const { goBack } = this.props.navigation;
     return (
       <Container>
         <Header
-          style={{ backgroundColor: "#f26c4d" }}
+          style={{ backgroundColor: "white" }}
           androidStatusBarColor="#394753"
         >
           <StatusBar barStyle="light-content" />
+
+          <Left>
+            <Button transparent onPress={() => goBack()}>
+              <Icon
+                name="keyboard-arrow-left"
+                style={{
+                  color: "#f26c4d",
+                  fontSize: 27
+                }}
+              />
+            </Button>
+          </Left>
+
           <Body>
-            <Text style={textisize(20, "white", "500")}>Add a Card</Text>
+            <Text>Enter Your Card Details</Text>
           </Body>
+
+          <Right />
         </Header>
         <Content
-  keyboardShouldPersistTaps="always"
-  keyboardDismissMode="on-drag">
-          <Text style={styles.carddetails}>Enter Your Card Details</Text>
+          keyboardShouldPersistTaps="always"
+          keyboardDismissMode="on-drag"
+          style={{ backgroundColor: "white" }}
+        >
+          <View style={{ marginTop: 10 }}>
+            <CreditCardInput
+              autoFocus={true}
+              onChange={this._cardOnChange.bind(this)}
+              cardScale={0.7}
+            />
 
-          <CreditCardInput
-            autoFocus={true}
-            onChange={this._cardOnChange.bind(this)}
-          />
+            <Text style={textisize(14)}>
+              {this.state.cardmsg}
+            </Text>
 
-          <Text style={textisize(14)}>
-            {this.state.cardmsg}
-          </Text>
+            <Text style={textisize(14)}>
+              {this.state.error}
+            </Text>
 
-          {this.renderButtonOrSpinner()}
+            {this.renderButtonOrSpinner()}
+          </View>
         </Content>
 
         <Footer style={xstyles.newfootie} />
@@ -299,7 +350,7 @@ var styles = StyleSheet.create({
   },
 
   carddetails: {
-    fontSize: 20,
+    fontSize: 15,
     fontWeight: "600",
     marginVertical: 25,
 
@@ -311,5 +362,10 @@ var styles = StyleSheet.create({
     color: "#f26c4d",
     fontSize: 30,
     marginTop: 17
+  },
+
+  ico: {
+    color: "#efefef",
+    fontSize: 27
   }
 });

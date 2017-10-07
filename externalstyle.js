@@ -16,13 +16,13 @@ module.exports = {
   button: {
     backgroundColor: "#f26c4d",
     marginTop: 20,
-    width: width * 0.8,
+
     alignSelf: "center"
   },
 
   disabledbutton: {
     marginTop: 20,
-    width: width * 0.8,
+
     alignSelf: "center"
   },
 
@@ -62,12 +62,16 @@ module.exports = {
     width: width - 15
   },
   ticon: {
-    width: 40,
-    height: 40,
+    width: 41,
+    height: 41,
     paddingTop: 4
   },
 
   formsize: {
-    fontSize: 15
+    fontSize: 13
+  },
+  formsize2: {
+    fontSize: 13,
+    height: 45
   }
 };

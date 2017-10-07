@@ -116,6 +116,7 @@ export default class HomeScreen extends Component {
     BackHandler.addEventListener("hardwareBackPress", () => {
       try {
         BackHandler.exitApp();
+        //this.props.navigation.navigate("Home");
         return false;
       } catch (err) {
         console.debug("Can't pop. Exiting the app...");
@@ -133,18 +134,20 @@ export default class HomeScreen extends Component {
     var user = "User";
 
     try {
-      const vals = await AsyncStorage.getItem("displayName");
+      const vals = await AsyncStorage.getItem("username");
+      const namee = await AsyncStorage.getItem("name");
+      const gid = await AsyncStorage.getItem("globalId");
 
-      if (vals != null) {
-        this.setState({ usr: vals });
+      if (namee != null) {
+        this.setState({ usr: "" + namee + " (" + gid + ")" });
+      } else if (vals != null) {
+        this.setState({ usr: "" + vals });
       } else {
-        const dname = "User";
+        this.setState({ usr: "Welcome!" });
       }
     } catch (error) {
-      this.setState({ usr: "User!" });
+      this.setState({ usr: "Welcome!" });
     }
-
-    //  var user = firebase.auth().currentUser;
   }
 
   async shotiSanwo(action) {
@@ -158,7 +161,7 @@ export default class HomeScreen extends Component {
         if (action == "call") {
           var gowhere = "";
           //  navigate("callMiddleMan");
-          RNImmediatePhoneCall.immediatePhoneCall("+2349091111129");
+          RNImmediatePhoneCall.immediatePhoneCall("016310592");
         } else if (action == "appointment") {
           var gowhere = "";
 
@@ -277,7 +280,9 @@ export default class HomeScreen extends Component {
                   </Button>
                 </Left>
                 <Right>
-                  <Text style={xstyles.newtxt}>BOLAKALE, John</Text>
+                  <Text style={xstyles.newtxt}>
+                    {this.state.usr}
+                  </Text>
                 </Right>
               </Row>
 
@@ -286,40 +291,29 @@ export default class HomeScreen extends Component {
               </Row>
 
               <Row size={1} style={styles.juxt}>
-                <Col style={styles.box}>
+                <View style={styles.box}>
                   <TouchableOpacity
                     onPress={() => this.shotiSanwo("call")}
                     style={styles.tciti}
                   >
                     <Image
-                      source={require("./imgsfresh/medal-1.png")}
-                      style={xstyles.ticon}
-                    />
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={() => this.shotiSanwo("call")}>
-                    <Text style={styles.ctxt}>MY HEALTH TARGETS</Text>
-                  </TouchableOpacity>
-                </Col>
-                <Col style={styles.box}>
-                  <TouchableOpacity
-                    onPress={() => this.shotiSanwo("appointment")}
-                    style={styles.tciti}
-                  >
-                    <Image
-                      source={require("./imgsfresh/amh.png")}
+                      source={require("./imgsfresh/speech-bubble.png")}
                       style={xstyles.ticon}
                     />
                   </TouchableOpacity>
                   <TouchableOpacity
-                    onPress={() => this.shotiSanwo("appointment")}
+                    onPress={() => this.shotiSanwo("call")}
+                    style={styles.tciti2}
                   >
-                    <Text style={styles.ctxt}>ASSESS MY HEALTH</Text>
+                    <Text style={styles.ctxt}>
+                      CALL A {"\n"} DOCTOR
+                    </Text>
                   </TouchableOpacity>
-                </Col>
+                </View>
 
-                <Col style={styles.box}>
+                <View style={styles.box}>
                   <TouchableOpacity
-                    onPress={() => this.shotiSanwo("call")}
+                    onPress={() => this.shotiSanwo("appointment")}
                     style={styles.tciti}
                   >
                     <Image
@@ -327,12 +321,17 @@ export default class HomeScreen extends Component {
                       style={xstyles.ticon}
                     />
                   </TouchableOpacity>
-                  <TouchableOpacity onPress={() => this.shotiSanwo("call")}>
-                    <Text style={styles.ctxt}>SPECIAISTS APPOINTMENT</Text>
+                  <TouchableOpacity
+                    style={styles.tciti2}
+                    onPress={() => this.shotiSanwo("appointment")}
+                  >
+                    <Text style={styles.ctxt}>
+                      SPECIALISTS {"\n"} APPOINTMENT
+                    </Text>
                   </TouchableOpacity>
-                </Col>
+                </View>
 
-                <Col style={styles.box}>
+                <View style={styles.box}>
                   <TouchableOpacity
                     onPress={() => this.shotiSanwo("homevisit")}
                     style={styles.tciti}
@@ -343,20 +342,20 @@ export default class HomeScreen extends Component {
                     />
                   </TouchableOpacity>
                   <TouchableOpacity
-                    onPress={() => this.shotiSanwo("homevisit")}
+                    onPress={() => navigate("requestVisit")}
+                    style={styles.tciti2}
                   >
                     <Text style={styles.ctxt}>
-                      {` REQUEST A
-HOME VISIT `}
+                      REQUEST {"\n"} HOME VISIT
                     </Text>
                   </TouchableOpacity>
-                </Col>
+                </View>
               </Row>
 
               <Row size={1} style={styles.juxt}>
-                <Col style={styles.box}>
+                <View style={styles.box}>
                   <TouchableOpacity
-                    onPress={() => this._showModal()}
+                    onPress={() => console.log("yes")}
                     style={styles.tciti}
                   >
                     <Image
@@ -364,47 +363,19 @@ HOME VISIT `}
                       style={xstyles.ticon}
                     />
                   </TouchableOpacity>
-                  <TouchableOpacity onPress={() => this._showModal()}>
-                    <Text style={styles.ctxt}>PHARMACY & OTC REFILLS</Text>
-                  </TouchableOpacity>
-                </Col>
-
-                <Col style={styles.box}>
                   <TouchableOpacity
-                    onPress={() => this.shotiSanwo("call")}
-                    style={styles.tciti}
+                    onPress={() => console.log("yes")}
+                    style={styles.tciti2}
                   >
-                    <Image
-                      source={require("./imgsfresh/speech-bubble.png")}
-                      style={xstyles.ticon}
-                    />
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={() => this.shotiSanwo("call")}>
-                    <Text style={styles.ctxt}>VIRTUAL CONSULTATION</Text>
-                  </TouchableOpacity>
-                </Col>
-
-                <Col style={styles.box}>
-                  <TouchableOpacity
-                    onPress={() => this.shotiSanwo("call")}
-                    style={styles.tciti}
-                  >
-                    <Image
-                      source={require("./imgsfresh/palcare.png")}
-                      style={xstyles.ticon}
-                    />
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={() => this.shotiSanwo("call")}>
                     <Text style={styles.ctxt}>
-                      {`PALLIATIVE
- CARE`}
+                      PHARMACY {"\n"} & OTC REFILLS
                     </Text>
                   </TouchableOpacity>
-                </Col>
+                </View>
 
-                <Col style={styles.box}>
+                <View style={styles.box}>
                   <TouchableOpacity
-                    onPress={() => this.shotiSanwo("call")}
+                    onPress={() => this._showModal()}
                     style={styles.tciti}
                   >
                     <Image
@@ -412,15 +383,38 @@ HOME VISIT `}
                       style={xstyles.ticon}
                     />
                   </TouchableOpacity>
-                  <TouchableOpacity onPress={() => this.shotiSanwo("call")}>
-                    <Text style={styles.ctxt}>REVIEW MY RECORDS</Text>
+                  <TouchableOpacity
+                    onPress={() => this._showModal()}
+                    style={styles.tciti2}
+                  >
+                    <Text style={styles.ctxt}>
+                      REVIEW {"\n"} MY RECORDS
+                    </Text>
                   </TouchableOpacity>
-                </Col>
+                </View>
+
+                <View style={styles.box}>
+                  <TouchableOpacity
+                    onPress={() => navigate("User")}
+                    style={styles.tciti}
+                  >
+                    <Image
+                      source={require("./imgsfresh/usermale.png")}
+                      style={xstyles.ticon}
+                    />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => navigate("User")}
+                    style={styles.tciti2}
+                  >
+                    <Text style={styles.ctxt}>
+                      MY{"\n"} PROFILE
+                    </Text>
+                  </TouchableOpacity>
+                </View>
               </Row>
             </Grid>
           </Content>
-
-          <Footer style={xstyles.newfootie} />
         </Container>
       </Drawer>
     );
@@ -473,16 +467,18 @@ var styles = StyleSheet.create({
     fontWeight: "500",
     alignSelf: "center",
     textAlign: "center",
-    fontSize: 10,
+    alignContent: "center",
+    fontSize: 10.5,
     marginTop: 10
   },
 
   box: {
     alignItems: "center",
-    justifyContent: "center",
 
     marginTop: 1,
-    marginBottom: 10
+    marginBottom: 10,
+
+    marginHorizontal: 16
   },
   headicon: {
     fontSize: 30,
@@ -514,7 +510,7 @@ var styles = StyleSheet.create({
     backgroundColor: "#f26c4d",
     marginTop: 20,
     marginTop: 10,
-    width: 200,
+
     alignSelf: "center",
     justifyContent: "center"
   },
@@ -561,6 +557,8 @@ var styles = StyleSheet.create({
   },
 
   tciti: {
-    paddingTop: 20
-  }
+    paddingTop: 20,
+    alignSelf: "center"
+  },
+  tciti2: { justifyContent: "center" }
 });
