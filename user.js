@@ -73,7 +73,8 @@ export default class User extends Component {
     name: "",
     token: "",
     userid: "",
-    username: ""
+    username: "",
+    globalId: ""
   };
 
   async componentWillMount() {
@@ -85,6 +86,7 @@ export default class User extends Component {
       const addr = await AsyncStorage.getItem("address");
       const phonen = await AsyncStorage.getItem("phoneNumber");
       const usern = await AsyncStorage.getItem("username");
+      const gid = await AsyncStorage.getItem("globalId");
 
       if (
         toks !== "" ||
@@ -101,7 +103,8 @@ export default class User extends Component {
           name: name,
           address: addr,
           phoneNumber: phonen,
-          username: usern
+          username: usern,
+          globalId: gid
         });
       }
     } catch (e) {
@@ -243,6 +246,16 @@ export default class User extends Component {
             <Row style={styles.contenti2}>
               <Col>
                 <Form>
+                  <Item stackedLabel disabled>
+                    <Label>Global ID</Label>
+
+                    <Input
+                      style={xstyles.formsize2}
+                      disabled
+                      value={this.state.globalId}
+                    />
+                  </Item>
+
                   <Item stackedLabel disabled>
                     <Label>Username</Label>
 

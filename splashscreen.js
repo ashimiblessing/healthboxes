@@ -71,6 +71,8 @@ import requestVisit from "./requestvisit";
 import scanCard from "./scanCard";
 import SideBar from "./sidebar";
 import xstyles from "./externalstyle";
+import fileViewer from "./fileviewer";
+import otcRefill from "./otc_refil";
 
 textisize = function(size, color = "#191919", weight = "500") {
   return {
@@ -173,7 +175,9 @@ const HealthBoxes = StackNavigator({
   chargeCustomer: { screen: chargeCustomer },
   callMiddleMan: { screen: callMiddleMan },
   requestVisit: { screen: requestVisit },
-  scanCard: { screen: scanCard }
+  scanCard: { screen: scanCard },
+  fileViewer: { screen: fileViewer },
+  otcRefill: { screen: otcRefill }
 });
 
 AppRegistry.registerComponent("HealthBoxes", () => HealthBoxes);

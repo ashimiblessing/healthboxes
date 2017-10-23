@@ -148,6 +148,9 @@ if (project.hasProperty('MYAPP_RELEASE_STORE_FILE')) {
 }
 
 dependencies {
+    compile project(':react-native-fetch-blob')
+    compile project(':react-native-fs')
+    compile project(':react-native-document-picker')
     compile project(':react-native-awesome-card-io')
     compile project(':react-native-immediate-phone-call')
     compile project(':react-native-paystack')

@@ -139,12 +139,17 @@ export default class Welcome extends Component {
 
   async signupHandler() {
     const { navigate } = this.props.navigation;
-    const { email, password, displayName, phoneNumber } = this.state;
+    const { email, password, username, phoneNumber } = this.state;
 
     var atpos = email.indexOf("@");
     var dotpos = email.lastIndexOf(".");
 
-    if (phoneNumber.length < 7 || isNaN(phoneNumber)) {
+    if (username.indexOf(" ") >= 0) {
+      this.setState({
+        error: "Username cannot contain spaces",
+        loading: false
+      });
+    } else if (phoneNumber.length < 7 || isNaN(phoneNumber)) {
       this.setState({
         error: "Please enter a valid phone number",
         loading: false
@@ -159,10 +164,20 @@ export default class Welcome extends Component {
         error: "Please type a valid email",
         loading: false
       });
+    } else if (email.indexOf(" ") >= 0) {
+      this.setState({
+        error: "Email cannot contain spaces",
+        loading: false
+      });
+    } else if (password.indexOf(" ") >= 0) {
+      this.setState({
+        error: "Your password cannot contain spaces",
+        loading: false
+      });
     } else if (
       email !== "" &&
       password !== "" &&
-      (phoneNumber !== "") & (displayName !== "")
+      (phoneNumber !== "") & (username !== "")
     ) {
       this.setState({ error: "", loading: true });
       const { email, password, username, phoneNumber } = this.state;
@@ -229,7 +244,11 @@ export default class Welcome extends Component {
           }
         })
         .catch(error => {
-          this.setState({ error: error.message, loading: false });
+          //this.setState({ error: error.message, loading: false });
+          this.setState({
+            error: "Sorry, there was a communication error, please try again",
+            loading: false
+          });
         });
     } else {
       this.setState({
@@ -309,7 +328,8 @@ export default class Welcome extends Component {
         .catch(error => {
           //this.setState({ error: error.message, loading: false });
           this.setState({
-            error: "There was a problem logging in..",
+            error:
+              "There was a problem logging in. Please check your internet connection",
             loading: false
           });
         });
@@ -413,7 +433,7 @@ export default class Welcome extends Component {
                           autoCorrect={false}
                           style={xstyles.formsize}
                           placeholder="Username"
-                          value={this.state.displayName}
+                          value={this.state.username}
                           onChangeText={username => this.setState({ username })}
                           returnKeyType="done"
                         />
@@ -580,7 +600,7 @@ var styles = StyleSheet.create({
   },
 
   logo: {
-    maxWidth: width * 0.7,
+    maxWidth: width * 0.9,
     alignSelf: "center"
   },
 

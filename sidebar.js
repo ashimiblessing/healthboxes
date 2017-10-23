@@ -6,7 +6,8 @@ import {
   StyleSheet,
   Dimensions,
   TouchableHighlight,
-  AsyncStorage
+  AsyncStorage,
+  Alert
 } from "react-native";
 import { Button, Container, Content } from "native-base";
 import Icon from "react-native-vector-icons/MaterialIcons";
@@ -32,15 +33,21 @@ export class SideBar extends Component {
     return (
       <Container>
         <Content
-  keyboardShouldPersistTaps="always"
-  keyboardDismissMode="on-drag" padder>
+          keyboardShouldPersistTaps="always"
+          keyboardDismissMode="on-drag"
+          padder
+        >
           <View style={styles.sidebarcontain}>
             <Button transparent onPress={() => whereto("Home")}>
               <Icon name="home" style={styles.ico} />
               <Text style={styles.ttxt}>Home</Text>
             </Button>
 
-            <Button transparent onPress={() => alert("HealthBoxes")}>
+            <Button
+              transparent
+              onPress={() =>
+                Alert.alert("About HealthBoxes", "HealthBoxes mobile app 1.0")}
+            >
               <Icon name="info" style={styles.ico} />
               <Text style={styles.ttxt}>About</Text>
             </Button>

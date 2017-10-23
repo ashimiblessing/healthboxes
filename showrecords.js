@@ -17,7 +17,8 @@ import {
   TouchableHighlight,
   Dimensions,
   WebView,
-  StatusBar
+  StatusBar,
+  Platform
 } from "react-native";
 import {
   Container,
@@ -46,82 +47,131 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import { StackNavigator } from "react-navigation";
 import xstyles from "./externalstyle";
 
+var RNFS = require("react-native-fs");
+var SavePath =
+  Platform.OS === "ios" ? RNFS.MainBundlePath : RNFS.DocumentDirectoryPath;
+
 export default class showRecord extends Component {
   static navigationOptions = {
     title: "HealthBoxes",
     header: false
   };
 
-  state = {
-    animating: true,
-    myfetched: "",
-    loading: true
-  };
-
   constructor(props) {
     super(props);
+    this.state = {
+      animating: true,
+      myfetched: "",
+      loading: true,
+      crap: [],
+      mtitems: [],
+      loaded: false
+    };
   }
 
-  async signOut() {
-    const { navigate } = this.props.navigation;
-
-    AsyncStorage.removeItem("logincookie");
-    await firebase.auth().signOut();
-
-    navigate("Welcome", { message: "Please Login" });
-  }
+  handlePress = thefile => {
+    OpenFile.openDoc(
+      [
+        {
+          url: thefile,
+          fileName: "sample"
+        }
+      ],
+      (error, url) => {
+        if (error) {
+          console.error(error);
+        } else {
+          console.log(url);
+        }
+      }
+    );
+  };
 
   async componentWillMount() {
     const { navigate } = this.props.navigation;
 
-    fetch("http://app.healthboxes.com/recordlisting.php")
-      .then(function(response) {
-        var recieved = JSON.parse(response._bodyText);
+    try {
+      //AsyncStorage.setItem("myRecords", "");
+      var toks = await AsyncStorage.getItem("token");
+      var userid = await AsyncStorage.getItem("userId");
+      var emai = await AsyncStorage.getItem("email");
+      var name = await AsyncStorage.getItem("name");
+      var addr = await AsyncStorage.getItem("address");
+      var phonen = await AsyncStorage.getItem("phoneNumber");
 
-        AsyncStorage.setItem("myRecords", JSON.stringify(recieved));
+      if (
+        toks !== "" ||
+        userid !== "" ||
+        name !== "" ||
+        email !== "" ||
+        addr !== "" ||
+        phonen !== ""
+      ) {
+        this.setState({
+          token: toks,
+          userid: userid,
+          email: emai,
+          name: name,
+          address: addr,
+          phoneNumber: phonen
+        });
+      }
+    } catch (e) {
+      //silence is golden
+    }
 
-        //  alert(recieved);
-        //  navigate("Showrecord", { rec: recieved });
+    fetch(
+      "http://hbx.stripestech.com" +
+        "/api/HBXCore/GetFile/" +
+        this.state.userid,
+      {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/x-www-form-urlencoded",
+          Authorization: "Bearer " + toks
+        }
+      }
+    )
+      .then(response => response.json())
+      .then(async data => {
+        //var recieved = JSON.parse(data);
+
+        //AsyncStorage.setItem("myRecords", JSON.stringify(data.hbx_result));
+        this.setState({ mtitems: data.hbx_result, loaded: true });
       })
       .catch(function(err) {
         // Error :(
       });
 
-    //the second typeof
+    //this.setState({ loaded: true });
+  }
+
+  async componentDidMount() {
     /*
+
+    const { params } = this.props.navigation.state;
+    this.setState({ loaded: false });
     try {
-      const value = await AsyncStorage.getItem("myRecords");
-      if (value !== null) {
-        var pp2 = JSON.parse(params.value);
-        var plenght2 = pp2.lenght;
-        this.setState({
-          myfetched: value
-        });
-      }
-    } catch (error) {
-      // Error retrieving data
+      const itt = await AsyncStorage.getItem("myRecords");
+
+      this.setState({ crap: JSON.parse(itt), loaded: true });
+    } catch (e) {
+      //
     }
+
 
     */
   }
 
-  componentDidMount() {
-    const { params } = this.props.navigation.state;
+  renderImage(url) {
+    str = url.split(".");
 
-    if (typeof params == "undefined") {
-      AsyncStorage.getItem("myRecords").then(items => {
-        var myitems = JSON.parse(items);
-
-        this.updateItems(myitems);
-      });
-    }
-  }
-
-  updateItems(myitems) {
-    var pp = myitems;
-
+    //alert("http://hbx.stripestech.com/fileupload/" + url);
     const { navigate } = this.props.navigation;
-    navigate("Showrecord", { parami: myitems });
+    navigate("fileViewer", {
+      uri: "http://hbx.stripestech.com/fileupload/" + url
+    });
   }
 
   render() {
@@ -129,16 +179,16 @@ export default class showRecord extends Component {
     const { params } = this.props.navigation.state;
     const { goBack } = this.props.navigation;
 
-    if (typeof params !== "undefined") {
-      var pp = params.parami;
-      //  var plenght = pp.lenght;
+    if (this.state.loaded) {
+      var aa = this.state.mtitems;
+      var sliced = aa.slice(1, 15);
 
       return (
         <Container
           style={{ backgroundColor: "white", justifyContent: "center" }}
         >
           <Header
-            style={{ backgroundColor: "#f26c4d" }}
+            style={{ backgroundColor: "#ffffff" }}
             androidStatusBarColor="#394753"
           >
             <StatusBar barStyle="light-content" />
@@ -149,58 +199,39 @@ export default class showRecord extends Component {
               </Button>
             </Left>
             <Body>
-              <Text style={textisize(20, "white", "500")}>Dashboard</Text>
+              <Text>Uploaded Records</Text>
             </Body>
 
             <Right />
           </Header>
           <Content
-  keyboardShouldPersistTaps="always"
-  keyboardDismissMode="on-drag">
+            keyboardShouldPersistTaps="always"
+            keyboardDismissMode="on-drag"
+          >
             <Grid>
               <Row>
-                <Col style={{ marginLeft: 10 }}>
-                  <Text
-                    style={{
-                      fontWeight: "bold",
-                      fontSize: 20,
-                      alignSelf: "center",
-                      marginTop: 20
-                    }}
-                  >
-                    Uploaded Records
-                  </Text>
-                  <List
-                    dataArray={pp}
-                    renderRow={item =>
-                      <ListItem>
+                <List
+                  dataArray={sliced}
+                  renderRow={item =>
+                    <ListItem>
+                      <Col
+                        style={{ marginLeft: 10, justifyContent: "flex-start" }}
+                        size={6}
+                      >
                         <Text style={styles.normaltxt}>
-                          {item}
+                          {item.FileName}
                         </Text>
-                      </ListItem>}
-                  />
-                  <Text
-                    style={{
-                      fontWeight: "bold",
-                      fontSize: 20,
-                      alignSelf: "center",
-                      marginTop: 20
-                    }}
-                  >
-                    Your Prescriptions
-                  </Text>
+                      </Col>
 
-                  <Text
-                    style={{
-                      fontWeight: "400",
-                      fontSize: 15,
-                      alignSelf: "center",
-                      marginTop: 20
-                    }}
-                  >
-                    Nothing found.
-                  </Text>
-                </Col>
+                      <Col size={1}>
+                        <Icon
+                          name="file-download"
+                          style={{ fontSize: 23, color: "red" }}
+                          onPress={() => this.renderImage(item.FileUrl)}
+                        />
+                      </Col>
+                    </ListItem>}
+                />
               </Row>
               <Row />
               <Row />
@@ -257,7 +288,7 @@ var styles = StyleSheet.create({
   },
 
   ico: {
-    color: "white",
+    color: "#f26c4d",
     fontSize: 27
   },
 
@@ -275,7 +306,8 @@ var styles = StyleSheet.create({
   },
   normaltxt: {
     alignSelf: "center",
-    fontWeight: "300"
+    fontWeight: "300",
+    fontSize: 13
   },
 
   centering: {

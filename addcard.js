@@ -149,7 +149,7 @@ export default class addCard extends Component {
         )
           .then(response => response.json())
           .then(async data => {
-            //alert(JSON.stringify(data));
+            //if api call returns something useful..
             if (
               typeof data.hbx_result.status !== "undefined" &&
               data.hbx_result.status
@@ -226,16 +226,29 @@ export default class addCard extends Component {
               );
               navigate("Home");
             }
+          })
+          .catch(err => {
+            this.setState({
+              error: "Sorry, there was a communication error, please try again",
+              loading: false
+            });
           });
 
         //the catch below is for paystack chargecard
       })
       .catch(error => {
-        this.setState({ loading: false });
-        alert(
-          "There was a problem adding your card. Please double check your details; " +
-            error.message
-        );
+        if (error.code === "E_CONNECTION_ERROR") {
+          this.setState({ loading: false });
+          alert(
+            "There was a problem sending your payment. Please check your connection"
+          );
+        } else {
+          this.setState({ loading: false });
+          alert(
+            "There was a problem sending your payment. Error:  " + error.message
+          );
+        }
+
         console.log(error); // error is a javascript Error object
         console.log(error.message);
         console.log(error.code);

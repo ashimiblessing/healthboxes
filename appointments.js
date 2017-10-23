@@ -79,7 +79,8 @@ export default class Appointments extends Component {
     loading: false,
     userid: "",
     address: "",
-    selected1: "key0"
+    selected1: "key0",
+    nicedate: "Pick a date"
   };
 
   constructor(props) {
@@ -99,7 +100,10 @@ export default class Appointments extends Component {
 
   _handleDatePicked = date => {
     console.log("A date has been picked: ", date);
-    this.setState({ datetime: "" + date.toISOString() });
+    this.setState({
+      datetime: "" + date.toISOString(),
+      nicedate: "" + date.toString()
+    });
 
     this._hideDateTimePicker();
   };
@@ -123,7 +127,7 @@ export default class Appointments extends Component {
     } else if (phone === "") {
       this.setState({ error: "Please enter phone number", loading: false });
     } else if (name === "") {
-      this.setState({ error: "Please enter phone number", loading: false });
+      this.setState({ error: "Please enter name", loading: false });
     } else if (selected1 === "key0") {
       this.setState({
         error: "Please pick an appointment type",
@@ -173,7 +177,11 @@ export default class Appointments extends Component {
           })
           .catch(error => {
             //alert(JSON.stringify(error.message));
-            this.setState({ error: error.message, loading: false });
+            //this.setState({ error: error.message, loading: false });
+            this.setState({
+              error: "Sorry, there was a communication error, please try again",
+              loading: false
+            });
           });
       } catch (e) {
         //  }
@@ -276,7 +284,6 @@ export default class Appointments extends Component {
                     <Item stackedLabel>
                       <Label>Name</Label>
                       <Input
-                        disabled
                         onChangeText={text =>
                           this.setState({ name: "" + text })}
                         defaultValue={this.state.name}
@@ -321,7 +328,7 @@ export default class Appointments extends Component {
                       />
                       <Item label="Psychiatry" value="Psychiatry" />
                       <Item label="Urology" value="Urology" />
-                      <Item label="General Midicine" value="General Medicine" />
+                      <Item label="General Medicine" value="General Medicine" />
                       <Item label="Ophthalmologist" value="Ophthalmologist" />
                     </Picker>
 
@@ -338,7 +345,7 @@ export default class Appointments extends Component {
                             color: "#123456"
                           }}
                         >
-                          {this.state.datetime}
+                          {this.state.nicedate}
                         </Text>
                       </TouchableOpacity>
                     </Item>

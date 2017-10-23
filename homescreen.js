@@ -115,11 +115,30 @@ export default class HomeScreen extends Component {
   componentDidMount() {
     BackHandler.addEventListener("hardwareBackPress", () => {
       try {
-        BackHandler.exitApp();
-        //this.props.navigation.navigate("Home");
+        //BackHandler.exitApp();
+        //return true;
+        //  alert(this.props.navigation.state.routeName);
+
+        /*
+        if (this.props.navigation.state.routeName === "Home") {
+          // Do something
+          BackHandler.exitApp();
+        } else {
+          this.props.navigation.navigate("Home");
+          return true;
+        }
+
+
+        */
+
+        if (this.navigator && this.navigator.getCurrentRoutes().length > 1) {
+          this.navigator.pop();
+          return true;
+        }
+
         return false;
       } catch (err) {
-        console.debug("Can't pop. Exiting the app...");
+        console.log("Can't pop. Exiting the app... yikes!");
         return false;
       }
     });
@@ -139,7 +158,9 @@ export default class HomeScreen extends Component {
       const gid = await AsyncStorage.getItem("globalId");
 
       if (namee != null) {
-        this.setState({ usr: "" + namee + " (" + gid + ")" });
+        //const addcomma = namee.replace(" ", ", ");
+
+        this.setState({ usr: "" + namee });
       } else if (vals != null) {
         this.setState({ usr: "" + vals });
       } else {
@@ -160,8 +181,8 @@ export default class HomeScreen extends Component {
 
         if (action == "call") {
           var gowhere = "";
-          //  navigate("callMiddleMan");
-          RNImmediatePhoneCall.immediatePhoneCall("016310592");
+
+          RNImmediatePhoneCall.immediatePhoneCall("+2349091111129");
         } else if (action == "appointment") {
           var gowhere = "";
 
@@ -263,6 +284,11 @@ export default class HomeScreen extends Component {
             keyboardShouldPersistTaps="always"
             keyboardDismissMode="on-drag"
           >
+            <Header
+              style={{ backgroundColor: "#ffffff", width: 0, height: 0 }}
+              androidStatusBarColor="#394753"
+            />
+
             <Grid>
               <Row style={styles.topsmall}>
                 <Col>
@@ -279,19 +305,18 @@ export default class HomeScreen extends Component {
                     <Icon name="view-headline" style={xstyles.ico2} />
                   </Button>
                 </Left>
-                <Right>
-                  <Text style={xstyles.newtxt}>
-                    {this.state.usr}
-                  </Text>
-                </Right>
+
+                <Text style={xstyles.newtxt2}>
+                  {this.state.usr}
+                </Text>
               </Row>
 
-              <Row style={{ justifyContent: "center" }}>
+              <Row style={{ alignSelf: "center" }}>
                 <View style={xstyles.hr} />
               </Row>
 
               <Row size={1} style={styles.juxt}>
-                <View style={styles.box}>
+                <Col style={styles.box}>
                   <TouchableOpacity
                     onPress={() => this.shotiSanwo("call")}
                     style={styles.tciti}
@@ -309,9 +334,9 @@ export default class HomeScreen extends Component {
                       CALL A {"\n"} DOCTOR
                     </Text>
                   </TouchableOpacity>
-                </View>
+                </Col>
 
-                <View style={styles.box}>
+                <Col style={styles.box}>
                   <TouchableOpacity
                     onPress={() => this.shotiSanwo("appointment")}
                     style={styles.tciti}
@@ -329,9 +354,9 @@ export default class HomeScreen extends Component {
                       SPECIALISTS {"\n"} APPOINTMENT
                     </Text>
                   </TouchableOpacity>
-                </View>
+                </Col>
 
-                <View style={styles.box}>
+                <Col style={styles.box}>
                   <TouchableOpacity
                     onPress={() => this.shotiSanwo("homevisit")}
                     style={styles.tciti}
@@ -349,13 +374,13 @@ export default class HomeScreen extends Component {
                       REQUEST {"\n"} HOME VISIT
                     </Text>
                   </TouchableOpacity>
-                </View>
+                </Col>
               </Row>
 
               <Row size={1} style={styles.juxt}>
-                <View style={styles.box}>
+                <Col style={styles.box}>
                   <TouchableOpacity
-                    onPress={() => console.log("yes")}
+                    onPress={() => navigate("otcRefill")}
                     style={styles.tciti}
                   >
                     <Image
@@ -364,16 +389,16 @@ export default class HomeScreen extends Component {
                     />
                   </TouchableOpacity>
                   <TouchableOpacity
-                    onPress={() => console.log("yes")}
+                    onPress={() => navigate("otcRefill")}
                     style={styles.tciti2}
                   >
                     <Text style={styles.ctxt}>
                       PHARMACY {"\n"} & OTC REFILLS
                     </Text>
                   </TouchableOpacity>
-                </View>
+                </Col>
 
-                <View style={styles.box}>
+                <Col style={styles.box}>
                   <TouchableOpacity
                     onPress={() => this._showModal()}
                     style={styles.tciti}
@@ -391,9 +416,9 @@ export default class HomeScreen extends Component {
                       REVIEW {"\n"} MY RECORDS
                     </Text>
                   </TouchableOpacity>
-                </View>
+                </Col>
 
-                <View style={styles.box}>
+                <Col style={styles.box}>
                   <TouchableOpacity
                     onPress={() => navigate("User")}
                     style={styles.tciti}
@@ -411,7 +436,7 @@ export default class HomeScreen extends Component {
                       MY{"\n"} PROFILE
                     </Text>
                   </TouchableOpacity>
-                </View>
+                </Col>
               </Row>
             </Grid>
           </Content>
@@ -473,12 +498,11 @@ var styles = StyleSheet.create({
   },
 
   box: {
-    alignItems: "center",
-
     marginTop: 1,
     marginBottom: 10,
 
-    marginHorizontal: 16
+    marginHorizontal: 0,
+    maxWidth: width * 0.27
   },
   headicon: {
     fontSize: 30,
@@ -491,9 +515,6 @@ var styles = StyleSheet.create({
     fontSize: 27
   },
   juxt: {
-    justifyContent: "center",
-
-    alignItems: "center",
     alignSelf: "center",
     marginHorizontal: 10
   },

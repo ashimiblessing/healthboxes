@@ -56,6 +56,12 @@ module.exports = {
     fontSize: 15,
     fontWeight: "500"
   },
+  newtxt2: {
+    color: "#f26c4d",
+    fontSize: 15,
+    fontWeight: "500",
+    marginTop: 5
+  },
   hr: {
     borderBottomWidth: 2,
     borderBottomColor: "#efefef",

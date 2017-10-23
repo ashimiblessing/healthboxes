@@ -16,7 +16,8 @@ import {
   Text,
   TouchableHighlight,
   Dimensions,
-  StatusBar
+  StatusBar,
+  NavigationActions
 } from "react-native";
 import {
   Container,
@@ -47,6 +48,11 @@ var ImagePicker = require("react-native-image-picker");
 import * as firebase from "firebase";
 
 import xstyles from "./externalstyle";
+
+import {
+  DocumentPicker,
+  DocumentPickerUtil
+} from "react-native-document-picker";
 
 // More info on all the options is below in the README...just some common use cases shown here
 var options = {
@@ -109,8 +115,92 @@ export default class Viewer extends Component {
     }
   }
 
-  mycomponenti() {
+  pickerot() {
+    const { navigate } = this.props.navigation;
     const { phone, email, datetime, name, address, userid, token } = this.state;
+    try {
+      DocumentPicker.show(
+        {
+          filetype: [DocumentPickerUtil.allFiles()]
+        },
+        (error, res) => {
+          // Android
+
+          if (res == null) {
+            return;
+          }
+
+          console.log(
+            res.uri,
+            res.type, // mime type
+            res.fileName,
+            res.fileSize
+          );
+
+          this.setState({ animating: true, fileName: res.fileName });
+          var photo = {
+            uri: res.uri, // CameralRoll Url
+            type: res.type,
+            name: res.fileName
+          };
+
+          var formData = new FormData();
+          formData.append("file", photo);
+
+          formData.append(
+            "fileContent",
+            JSON.stringify({
+              fileContent: {
+                UserId: userid,
+                FileName: res.fileName
+              }
+            })
+          );
+
+          var urll = "http://hbx.stripestech.com" + "/api/HBXCore/UploadFile";
+          var xhr = new XMLHttpRequest();
+          xhr.open("POST", urll);
+          console.log("OPENED", xhr.status);
+
+          xhr.onprogress = function() {
+            console.log("LOADING", xhr.status);
+          };
+
+          xhr.onload = function() {
+            console.log("DONE", xhr.status);
+            if (xhr.status == 200) {
+              navigate("Home");
+              alert("Your file was uploaded successfully");
+              //this.setState({ animating: false });
+            } else {
+              navigate("Home");
+              alert("there was a problem uploading your file");
+              //this.setState({ animating: false });
+            }
+          };
+
+          xhr.onerror = function() {
+            navigate("Home");
+            alert("There was an error. Please check your connection");
+
+            //this.setState({ animating: false });
+          };
+
+          xhr.setRequestHeader("Content-Type", "multipart/form-data");
+          xhr.send(formData);
+        }
+      );
+    } catch (e) {
+      //silence
+      alert("hey");
+    }
+  }
+
+  mycomponenti() {
+    const { navigate } = this.props.navigation;
+
+    const { phone, email, datetime, name, address, userid, token } = this.state;
+
     ImagePicker.showImagePicker(options, response => {
       console.log("Response = ", response);
 
@@ -133,47 +223,57 @@ export default class Viewer extends Component {
           animating: true
         });
 
-        let photo = { uri: source.uri };
-        let formdata = new FormData();
+        //let photo = { uri: source.uri };
+        //let formdata = new FormData();
 
-        formdata.append("file", response.data);
+        var photo = {
+          uri: response.uri, // CameralRoll Url
+          type: "image/jpeg",
+          name: "photo.jpg"
+        };
 
-        formdata.append(
+        var formData = new FormData();
+        formData.append("file", photo);
+
+        formData.append(
           "fileContent",
           JSON.stringify({
-            fileUrl: response.uri,
-            type: response.type,
-            FileName: response.fileName,
-            UserId: userid,
-            isFileExist: true
+            fileContent: {
+              UserId: "935371c9-9b20-41fd-b216-005f3204953c",
+              FileName: "Blessing2"
+            }
           })
         );
 
-        fetch("http://hbx.stripestech.com" + "/api/HBXCore/UploadFile", {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "multipart/form-data",
-            Authorization: "Bearer " + token
-          },
-          body: formdata
-        })
-          .then(response => response.json())
-          .then(async data => {
-            alert(JSON.stringify(data));
+        var urll = "http://hbx.stripestech.com" + "/api/HBXCore/UploadFile";
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", urll);
+        console.log("OPENED", xhr.status);
 
-            this.setState({
-              animating: false
-            });
+        xhr.onprogress = function() {
+          console.log("LOADING", xhr.status);
+        };
 
-            const { navigate } = this.props.navigation;
-            //navigate("View", { message: JSON.stringify(response) });
-            //Alert.alert("Confirmation", "File upload successful");
-            //navigate("Home");
-          })
-          .catch(err => {
-            alert(err);
-          });
+        xhr.onload = function() {
+          console.log("DONE", xhr.status);
+          if (xhr.status == 200) {
+            navigate("Home");
+            alert("Your file was uploaded successfully");
+          } else {
+            navigate("Home");
+            alert("there was a problem uploading your file");
+          }
+        };
+
+        xhr.onerror = function() {
+          navigate("Home");
+          alert("There was an error. Please check your connection");
+
+          //this.setState((animating: false));
+        };
+
+        xhr.setRequestHeader("Content-Type", "multipart/form-data");
+        xhr.send(formData);
       }
     });
   }
@@ -194,7 +294,7 @@ export default class Viewer extends Component {
     }
 
     return (
-      <Button onPress={() => this.mycomponenti()} style={styles.button2}>
+      <Button onPress={() => this.pickerot()} style={styles.button2}>
         <Text style={styles.buttontxt}>Select to Upload</Text>
       </Button>
     );
